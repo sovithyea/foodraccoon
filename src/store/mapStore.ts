@@ -1,14 +1,35 @@
 import { create } from "zustand";
 import type { MapRestaurant } from "@/lib/restaurants";
 
+export type RouteStep = {
+  instruction: string;
+  distance: number;
+  duration: number;
+  type: string;
+};
+
+export type ActiveRoute = {
+  geometry: GeoJSON.LineString;
+  steps: RouteStep[];
+  distance: number;
+  duration: number;
+  profile: "walking" | "driving";
+  restaurantName: string;
+  restaurantId: string;
+} | null;
+
 export type MapState = {
   restaurants: MapRestaurant[];
   savedIds: Set<string>;
   selectedId: string | null;
 
   // Filters
-  cuisines: Set<string>; // empty = all
-  prices: Set<number>; // empty = all
+  cuisines: Set<string>;
+  prices: Set<number>;
+
+  // Directions
+  activeRoute: ActiveRoute;
+  userLocation: [number, number] | null;
 
   // Actions
   init: (restaurants: MapRestaurant[], savedIds: string[]) => void;
@@ -17,6 +38,9 @@ export type MapState = {
   togglePrice: (p: number) => void;
   clearFilters: () => void;
   markSaved: (id: string) => void;
+  setRoute: (route: ActiveRoute) => void;
+  clearRoute: () => void;
+  setUserLocation: (coords: [number, number]) => void;
 };
 
 export const useMapStore = create<MapState>((set) => ({
@@ -25,6 +49,8 @@ export const useMapStore = create<MapState>((set) => ({
   selectedId: null,
   cuisines: new Set(),
   prices: new Set(),
+  activeRoute: null,
+  userLocation: null,
 
   init: (restaurants, savedIds) =>
     set({ restaurants, savedIds: new Set(savedIds) }),
@@ -53,9 +79,12 @@ export const useMapStore = create<MapState>((set) => ({
       next.add(id);
       return { savedIds: next };
     }),
+
+  setRoute: (route) => set({ activeRoute: route }),
+  clearRoute: () => set({ activeRoute: null, userLocation: null }),
+  setUserLocation: (coords) => set({ userLocation: coords }),
 }));
 
-// Derive the filtered list (call inside a selector or component).
 export function filterRestaurants(s: MapState): MapRestaurant[] {
   return s.restaurants.filter((r) => {
     const cuisineOk =

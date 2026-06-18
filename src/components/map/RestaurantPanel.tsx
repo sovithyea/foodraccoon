@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Star, Bookmark, BookmarkCheck, Send, ArrowUpRight } from "lucide-react";
+import { Star, Bookmark, BookmarkCheck, Send, ArrowUpRight, Navigation } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -14,13 +14,53 @@ import { Button } from "@/components/ui/button";
 import { useMapStore } from "@/store/mapStore";
 import { priceLabel } from "@/lib/restaurants";
 
+async function getDirections(
+  restaurant: { id: string; name: string; longitude: number; latitude: number },
+  setRoute: ReturnType<typeof useMapStore.getState>["setRoute"],
+  setUserLocation: ReturnType<typeof useMapStore.getState>["setUserLocation"],
+  select: ReturnType<typeof useMapStore.getState>["select"],
+) {
+  return new Promise<void>((resolve) => {
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { longitude: lng, latitude: lat } = pos.coords;
+        try {
+          const res = await fetch(
+            `/api/directions?from=${lng},${lat}&to=${restaurant.longitude},${restaurant.latitude}&profile=walking`,
+          );
+          if (!res.ok) throw new Error("No route");
+          const data = await res.json();
+          setRoute({
+            ...data,
+            restaurantName: restaurant.name,
+            restaurantId: restaurant.id,
+            profile: "walking",
+          });
+          setUserLocation([lng, lat]);
+          select(null);
+        } catch {
+          toast.error("Could not get directions");
+        }
+        resolve();
+      },
+      () => {
+        toast.error("Enable location to get directions");
+        resolve();
+      },
+    );
+  });
+}
+
 export function RestaurantPanel() {
   const selectedId = useMapStore((s) => s.selectedId);
   const restaurants = useMapStore((s) => s.restaurants);
   const savedIds = useMapStore((s) => s.savedIds);
   const select = useMapStore((s) => s.select);
   const markSaved = useMapStore((s) => s.markSaved);
+  const setRoute = useMapStore((s) => s.setRoute);
+  const setUserLocation = useMapStore((s) => s.setUserLocation);
   const [saving, setSaving] = useState(false);
+  const [gettingDirections, setGettingDirections] = useState(false);
 
   const restaurant = restaurants.find((r) => r.id === selectedId) ?? null;
   const isSaved = restaurant ? savedIds.has(restaurant.id) : false;
@@ -128,6 +168,20 @@ export function RestaurantPanel() {
                   <ArrowUpRight className="size-4" /> View full
                 </Button>
               </div>
+
+              <Button
+                variant="outline"
+                className="w-full"
+                disabled={gettingDirections}
+                onClick={async () => {
+                  setGettingDirections(true);
+                  await getDirections(restaurant, setRoute, setUserLocation, select);
+                  setGettingDirections(false);
+                }}
+              >
+                <Navigation className="size-4" />
+                {gettingDirections ? "Getting directions…" : "Get directions"}
+              </Button>
             </div>
           </>
         )}

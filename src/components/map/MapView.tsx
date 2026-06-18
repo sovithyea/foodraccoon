@@ -6,6 +6,7 @@ import type { MapRestaurant } from "@/lib/restaurants";
 import { RestaurantMap } from "./RestaurantMap";
 import { FilterBar } from "./FilterBar";
 import { RestaurantPanel } from "./RestaurantPanel";
+import { DirectionsPanel } from "./DirectionsPanel";
 
 export function MapView({
   restaurants,
@@ -25,6 +26,7 @@ export function MapView({
       <RestaurantMap />
       <FilterBar />
       <RestaurantPanel />
+      <DirectionsPanel />
     </div>
   );
 }
