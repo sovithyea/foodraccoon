@@ -63,7 +63,7 @@ export function RestaurantMap() {
 
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: "mapbox://styles/mapbox/dark-v11",
+      style: "mapbox://styles/mapbox/light-v11",
       center: PHNOM_PENH_CENTER,
       zoom: DEFAULT_ZOOM,
       attributionControl: false,
@@ -87,8 +87,8 @@ export function RestaurantMap() {
         source: SOURCE_ID,
         filter: ["has", "point_count"],
         paint: {
-          "circle-color": "#C75D3C",
-          "circle-opacity": 0.85,
+          "circle-color": "#D44C2A",
+          "circle-opacity": 0.9,
           "circle-radius": [
             "step",
             ["get", "point_count"],
@@ -99,7 +99,7 @@ export function RestaurantMap() {
             28,
           ],
           "circle-stroke-width": 2,
-          "circle-stroke-color": "rgba(255,255,255,0.25)",
+          "circle-stroke-color": "rgba(255,255,255,0.6)",
         },
       });
       map.addLayer({
@@ -125,12 +125,12 @@ export function RestaurantMap() {
           "circle-color": [
             "case",
             ["get", "saved"],
-            "#E8A33D",
-            "#C75D3C",
+            "#E8834A",
+            "#D44C2A",
           ],
           "circle-radius": ["case", ["get", "saved"], 9, 7],
           "circle-stroke-width": 2,
-          "circle-stroke-color": "#1a1410",
+          "circle-stroke-color": "#F5F0E8",
         },
       });
 
