@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Star, Send, ArrowUpRight, Navigation } from "lucide-react";
 import { toast } from "sonner";
-import { Star, Bookmark, BookmarkCheck, Send, ArrowUpRight, Navigation } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -54,38 +54,12 @@ async function getDirections(
 export function RestaurantPanel() {
   const selectedId = useMapStore((s) => s.selectedId);
   const restaurants = useMapStore((s) => s.restaurants);
-  const savedIds = useMapStore((s) => s.savedIds);
   const select = useMapStore((s) => s.select);
-  const markSaved = useMapStore((s) => s.markSaved);
   const setRoute = useMapStore((s) => s.setRoute);
   const setUserLocation = useMapStore((s) => s.setUserLocation);
-  const [saving, setSaving] = useState(false);
   const [gettingDirections, setGettingDirections] = useState(false);
 
   const restaurant = restaurants.find((r) => r.id === selectedId) ?? null;
-  const isSaved = restaurant ? savedIds.has(restaurant.id) : false;
-
-  async function handleSave() {
-    if (!restaurant || isSaved) return;
-    setSaving(true);
-    try {
-      const res = await fetch(`/api/restaurants/${restaurant.id}/rate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "want_to_try" }),
-      });
-      if (!res.ok) {
-        const { error } = await res.json().catch(() => ({ error: "" }));
-        throw new Error(error || "Could not save");
-      }
-      markSaved(restaurant.id);
-      toast.success(`Saved ${restaurant.name} to Want to Try`);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not save");
-    } finally {
-      setSaving(false);
-    }
-  }
 
   return (
     <Sheet
@@ -143,21 +117,6 @@ export function RestaurantPanel() {
               )}
 
               <div className="grid grid-cols-2 gap-2 pt-2">
-                <Button
-                  onClick={handleSave}
-                  disabled={saving || isSaved}
-                  variant={isSaved ? "secondary" : "default"}
-                >
-                  {isSaved ? (
-                    <>
-                      <BookmarkCheck className="size-4" /> Saved
-                    </>
-                  ) : (
-                    <>
-                      <Bookmark className="size-4" /> Save
-                    </>
-                  )}
-                </Button>
                 <Button variant="outline" disabled title="Coming in Phase 2">
                   <Star className="size-4" /> Rate
                 </Button>

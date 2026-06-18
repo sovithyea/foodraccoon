@@ -2,9 +2,6 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/lib/database.types";
 
-// Public routes that an unauthenticated visitor may reach.
-const PUBLIC_PATHS = ["/login", "/signup", "/auth"];
-
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -29,7 +26,6 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Refresh session cookies — no auth gate.
   await supabase.auth.getUser();
 
   return supabaseResponse;
