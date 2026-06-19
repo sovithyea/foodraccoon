@@ -10,6 +10,7 @@ import {
   type MapState,
 } from "@/store/mapStore";
 import { DEFAULT_ZOOM, PHNOM_PENH_CENTER } from "@/lib/restaurants";
+import { SearchFilterPill } from "./SearchFilterPill";
 
 const TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 const SOURCE_ID = "restaurants";
@@ -20,7 +21,7 @@ type FeatureCollection = GeoJSON.FeatureCollection<GeoJSON.Point>;
 
 function toGeoJSON(
   restaurants: MapState["restaurants"],
-  savedIds: Set<string>,
+  statusMap: Map<string, string>,
 ): FeatureCollection {
   return {
     type: "FeatureCollection",
@@ -31,7 +32,7 @@ function toGeoJSON(
       properties: {
         id: r.id,
         name: r.name,
-        saved: savedIds.has(r.id),
+        status: statusMap.get(r.id) ?? null,
       },
     })),
   };
@@ -41,7 +42,6 @@ export function RestaurantMap() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const loadedRef = useRef(false);
-  // Refs keep current values accessible inside stable map event callbacks.
   const geojsonRef = useRef<FeatureCollection>({ type: "FeatureCollection", features: [] });
   const selectRef = useRef<(id: string | null) => void>(() => {});
   const userMarkerRef = useRef<mapboxgl.Marker | null>(null);
@@ -53,20 +53,24 @@ export function RestaurantMap() {
   const restaurants = useMapStore((s) => s.restaurants);
   const cuisines = useMapStore((s) => s.cuisines);
   const prices = useMapStore((s) => s.prices);
-  const savedIds = useMapStore((s) => s.savedIds);
+  const statusMap = useMapStore((s) => s.statusMap);
   const activeRoute = useMapStore((s) => s.activeRoute);
   const userLocation = useMapStore((s) => s.userLocation);
+  const selectedId = useMapStore((s) => s.selectedId);
+  const searchFilterIds = useMapStore((s) => s.searchFilterIds);
 
   const geojson = useMemo<FeatureCollection>(() => {
-    const filtered = filterRestaurants({
+    let filtered = filterRestaurants({
       restaurants,
       cuisines,
       prices,
     } as MapState);
-    return toGeoJSON(filtered, savedIds);
-  }, [restaurants, cuisines, prices, savedIds]);
+    if (searchFilterIds) {
+      filtered = filtered.filter((r) => searchFilterIds.has(r.id));
+    }
+    return toGeoJSON(filtered, statusMap);
+  }, [restaurants, cuisines, prices, statusMap, searchFilterIds]);
 
-  // Always keep ref current so style.load handler uses fresh data.
   geojsonRef.current = geojson;
 
   // Initialise the map once.
@@ -85,7 +89,6 @@ export function RestaurantMap() {
     mapRef.current = map;
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
 
-    // Re-adds restaurant source + layers — called on every style.load (initial + setStyle).
     function setupRestaurantLayers() {
       const dark = document.documentElement.classList.contains("dark");
       map.addSource(SOURCE_ID, {
@@ -126,8 +129,14 @@ export function RestaurantMap() {
         source: SOURCE_ID,
         filter: ["!", ["has", "point_count"]],
         paint: {
-          "circle-color": ["case", ["get", "saved"], "#E8834A", "#D44C2A"],
-          "circle-radius": ["case", ["get", "saved"], 9, 7],
+          "circle-color": [
+            "case",
+            ["==", ["get", "status"], "favourite"], "#C9973A",
+            ["==", ["get", "status"], "visited"], "#4A7C59",
+            ["==", ["get", "status"], "want_to_try"], "#E8834A",
+            "#D44C2A",
+          ],
+          "circle-radius": ["case", ["!=", ["get", "status"], null], 9, 7],
           "circle-stroke-width": 2,
           "circle-stroke-color": dark ? "#1C1712" : "#F5F0E8",
         },
@@ -135,8 +144,6 @@ export function RestaurantMap() {
       loadedRef.current = true;
     }
 
-    // Register interaction handlers once — they persist across style reloads
-    // because layer-specific handlers simply don't fire when layers are absent.
     map.on("load", () => {
       map.on("click", "clusters", (e) => {
         const feature = map.queryRenderedFeatures(e.point, { layers: ["clusters"] })[0];
@@ -178,16 +185,40 @@ export function RestaurantMap() {
     if (!map || !loadedRef.current) return;
     loadedRef.current = false;
     map.setStyle(resolvedTheme === "dark" ? DARK_STYLE : LIGHT_STYLE);
-    // style.load fires after setStyle and re-adds layers via setupRestaurantLayers.
   }, [resolvedTheme]);
 
-  // Push filtered/saved data to the source when it changes.
+  // Push filtered data to the source when it changes.
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !loadedRef.current) return;
     const source = map.getSource(SOURCE_ID) as mapboxgl.GeoJSONSource | undefined;
     source?.setData(geojson);
   }, [geojson]);
+
+  // Fly to a restaurant when it's selected (e.g. from search).
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !loadedRef.current || !selectedId) return;
+    const r = restaurants.find((r) => r.id === selectedId);
+    if (r) {
+      map.flyTo({ center: [r.longitude, r.latitude], zoom: 15, duration: 600 });
+    }
+  }, [selectedId, restaurants]);
+
+  // Fit map bounds when a search filter is applied.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !loadedRef.current || !searchFilterIds || searchFilterIds.size === 0) return;
+    const coords = restaurants
+      .filter((r) => searchFilterIds.has(r.id))
+      .map((r) => [r.longitude, r.latitude] as [number, number]);
+    if (coords.length === 0) return;
+    const bounds = coords.reduce(
+      (b, c) => b.extend(c),
+      new mapboxgl.LngLatBounds(coords[0], coords[0]),
+    );
+    map.fitBounds(bounds, { padding: 80, maxZoom: 16 });
+  }, [searchFilterIds, restaurants]);
 
   // Draw / clear the active directions route.
   useEffect(() => {
@@ -254,5 +285,10 @@ export function RestaurantMap() {
     );
   }
 
-  return <div ref={containerRef} className="h-full w-full" />;
+  return (
+    <>
+      <div ref={containerRef} className="h-full w-full" />
+      <SearchFilterPill />
+    </>
+  );
 }

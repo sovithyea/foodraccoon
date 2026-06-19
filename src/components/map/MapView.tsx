@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useMapStore } from "@/store/mapStore";
+import { useMapStore, type RestaurantStatus } from "@/store/mapStore";
 import type { MapRestaurant } from "@/lib/restaurants";
 import { RestaurantMap } from "./RestaurantMap";
 import { FilterBar } from "./FilterBar";
@@ -10,16 +10,16 @@ import { DirectionsPanel } from "./DirectionsPanel";
 
 export function MapView({
   restaurants,
-  savedIds,
+  statuses,
 }: {
   restaurants: MapRestaurant[];
-  savedIds: string[];
+  statuses: { restaurantId: string; status: RestaurantStatus }[];
 }) {
   const init = useMapStore((s) => s.init);
 
   useEffect(() => {
-    init(restaurants, savedIds);
-  }, [init, restaurants, savedIds]);
+    init(restaurants, statuses);
+  }, [init, restaurants, statuses]);
 
   return (
     <div className="relative h-full w-full">

@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import type { MapRestaurant } from "@/lib/restaurants";
 
+export type RestaurantStatus = "want_to_try" | "visited" | "favourite";
+
 export type RouteStep = {
   instruction: string;
   distance: number;
@@ -20,24 +22,34 @@ export type ActiveRoute = {
 
 export type MapState = {
   restaurants: MapRestaurant[];
-  savedIds: Set<string>;
+  statusMap: Map<string, RestaurantStatus>;
   selectedId: string | null;
 
   // Filters
   cuisines: Set<string>;
   prices: Set<number>;
 
+  // Search
+  searchQuery: string;
+  searchFilterIds: Set<string> | null;
+
   // Directions
   activeRoute: ActiveRoute;
   userLocation: [number, number] | null;
 
   // Actions
-  init: (restaurants: MapRestaurant[], savedIds: string[]) => void;
+  init: (
+    restaurants: MapRestaurant[],
+    statuses: { restaurantId: string; status: RestaurantStatus }[],
+  ) => void;
   select: (id: string | null) => void;
   toggleCuisine: (c: string) => void;
   togglePrice: (p: number) => void;
   clearFilters: () => void;
-  markSaved: (id: string) => void;
+  updateStatus: (id: string, status: RestaurantStatus) => void;
+  clearStatus: (id: string) => void;
+  setSearchFilter: (query: string, ids: string[]) => void;
+  clearSearchFilter: () => void;
   setRoute: (route: ActiveRoute) => void;
   clearRoute: () => void;
   setUserLocation: (coords: [number, number]) => void;
@@ -45,15 +57,19 @@ export type MapState = {
 
 export const useMapStore = create<MapState>((set) => ({
   restaurants: [],
-  savedIds: new Set(),
+  statusMap: new Map(),
   selectedId: null,
   cuisines: new Set(),
   prices: new Set(),
+  searchQuery: "",
+  searchFilterIds: null,
   activeRoute: null,
   userLocation: null,
 
-  init: (restaurants, savedIds) =>
-    set({ restaurants, savedIds: new Set(savedIds) }),
+  init: (restaurants, statuses) => {
+    const statusMap = new Map(statuses.map((s) => [s.restaurantId, s.status]));
+    set({ restaurants, statusMap });
+  },
 
   select: (id) => set({ selectedId: id }),
 
@@ -73,12 +89,24 @@ export const useMapStore = create<MapState>((set) => ({
 
   clearFilters: () => set({ cuisines: new Set(), prices: new Set() }),
 
-  markSaved: (id) =>
+  updateStatus: (id, status) =>
     set((s) => {
-      const next = new Set(s.savedIds);
-      next.add(id);
-      return { savedIds: next };
+      const next = new Map(s.statusMap);
+      next.set(id, status);
+      return { statusMap: next };
     }),
+
+  clearStatus: (id) =>
+    set((s) => {
+      const next = new Map(s.statusMap);
+      next.delete(id);
+      return { statusMap: next };
+    }),
+
+  setSearchFilter: (query, ids) =>
+    set({ searchQuery: query, searchFilterIds: new Set(ids) }),
+
+  clearSearchFilter: () => set({ searchQuery: "", searchFilterIds: null }),
 
   setRoute: (route) => set({ activeRoute: route }),
   clearRoute: () => set({ activeRoute: null, userLocation: null }),

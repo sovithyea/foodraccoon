@@ -9,7 +9,7 @@ export default async function ProfilePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { count: savedCount }] = await Promise.all([
+  const [{ data: profile }, { data: statusRows }] = await Promise.all([
     supabase
       .from("profiles")
       .select("username, display_name, city, bio")
@@ -17,9 +17,12 @@ export default async function ProfilePage() {
       .maybeSingle(),
     supabase
       .from("user_restaurants")
-      .select("id", { count: "exact", head: true })
+      .select("status")
       .eq("user_id", user.id),
   ]);
+
+  const savedCount = statusRows?.length ?? 0;
+  const visitedCount = statusRows?.filter((r) => r.status === "visited").length ?? 0;
 
   const initials = (profile?.display_name ?? profile?.username ?? "?")
     .slice(0, 2)
@@ -43,13 +46,13 @@ export default async function ProfilePage() {
       </div>
 
       <div className="mt-8 grid grid-cols-3 gap-3 text-center">
-        <Stat label="Saved" value={savedCount ?? 0} />
-        <Stat label="Visited" value={0} />
+        <Stat label="Saved" value={savedCount} />
+        <Stat label="Visited" value={visitedCount} />
         <Stat label="Lists" value={0} />
       </div>
 
       <p className="text-muted-foreground mt-10 text-center text-xs">
-        Ratings, lists, and followers arrive in later phases.
+        Lists and followers arrive in later phases.
       </p>
     </div>
   );

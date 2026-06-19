@@ -30,8 +30,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${notoKhmer.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="bg-background text-foreground min-h-full">
+      <body className="bg-background text-foreground min-h-full" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
           <Toaster richColors position="top-center" />
