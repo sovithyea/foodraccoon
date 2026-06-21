@@ -67,34 +67,36 @@ export function ListCard({ list, onUpdated, onDeleted, onClick }: Props) {
           </div>
         </button>
 
-        {confirmDelete ? (
-          <div className="flex items-center gap-2 shrink-0">
-            <Button variant="ghost" size="sm" onClick={() => setConfirmDelete(false)} disabled={deleting}>
-              Cancel
-            </Button>
-            <Button variant="destructive" size="sm" onClick={handleDelete} disabled={deleting}>
-              {deleting ? "Deleting…" : "Delete"}
-            </Button>
-          </div>
-        ) : (
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={<Button variant="ghost" size="icon-sm"><MoreHorizontal className="size-4" /></Button>}
-            />
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={() => setEditOpen(true)}>
-                <Pencil className="size-4" /> Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={handleTogglePublic}>
-                {list.is_public ? <><Lock className="size-4" /> Make private</> : <><Globe className="size-4" /> Make public</>}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onSelect={() => setConfirmDelete(true)}>
-                <Trash2 className="size-4" /> Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+        <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
+          {confirmDelete ? (
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={() => setConfirmDelete(false)} disabled={deleting}>
+                Cancel
+              </Button>
+              <Button variant="destructive" size="sm" onClick={handleDelete} disabled={deleting}>
+                {deleting ? "Deleting…" : "Delete"}
+              </Button>
+            </div>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={<Button variant="ghost" size="icon-sm"><MoreHorizontal className="size-4" /></Button>}
+              />
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setEditOpen(true)}>
+                  <Pencil className="size-4" /> Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleTogglePublic}>
+                  {list.is_public ? <><Lock className="size-4" /> Make private</> : <><Globe className="size-4" /> Make public</>}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onClick={() => setConfirmDelete(true)}>
+                  <Trash2 className="size-4" /> Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
 
       <CreateListSheet

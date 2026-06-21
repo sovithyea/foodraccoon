@@ -38,8 +38,9 @@ export async function GET(
     for (const r of ratings ?? []) userRatings.set(r.restaurant_id, r.rating)
   }
 
-  const result = (rows ?? []).map((row) => ({
+  const result = (rows ?? []).map(({ restaurants, ...row }) => ({
     ...row,
+    restaurant: restaurants,
     user_rating: userRatings.get(row.restaurant_id) ?? null,
   }))
 

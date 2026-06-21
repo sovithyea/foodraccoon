@@ -19,13 +19,13 @@ const DEFAULT_LISTS: { slug: string; label: string; Icon: LucideIcon }[] = [
 
 export default function ListsPage() {
   const router = useRouter()
-  const { lists, loaded, setLists, addList, updateList, removeList } = useListsStore()
-  const [loading, setLoading] = useState(!loaded)
+  const { lists, setLists, addList, updateList, removeList } = useListsStore()
+  const [loading, setLoading] = useState(true)
   const [createOpen, setCreateOpen] = useState(false)
   const [authed, setAuthed] = useState(false)
 
   useEffect(() => {
-    if (loaded) return
+    setLoading(true)
     fetch("/api/lists")
       .then((r) => r.json())
       .then((data) => {
@@ -36,7 +36,7 @@ export default function ListsPage() {
         setLoading(false)
       })
       .catch(() => setLoading(false))
-  }, [loaded, setLists])
+  }, [setLists])
 
   useEffect(() => {
     // Also check auth separately for the empty state

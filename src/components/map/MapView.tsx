@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useMapStore, type RestaurantStatus } from "@/store/mapStore";
+import { useMapStore, RESTAURANTS_TTL, type RestaurantStatus } from "@/store/mapStore";
 import type { MapRestaurant } from "@/lib/restaurants";
 import { RestaurantMap } from "./RestaurantMap";
 import { FilterBar } from "./FilterBar";
@@ -10,17 +10,40 @@ import { DirectionsPanel } from "./DirectionsPanel";
 import { MapStylePicker } from "./MapStylePicker";
 
 export function MapView({
-  restaurants,
   statuses,
 }: {
-  restaurants: MapRestaurant[];
   statuses: { restaurantId: string; status: RestaurantStatus }[];
 }) {
-  const init = useMapStore((s) => s.init);
+  const setStatuses = useMapStore((s) => s.setStatuses);
+  const setRestaurants = useMapStore((s) => s.setRestaurants);
 
   useEffect(() => {
-    init(restaurants, statuses);
-  }, [init, restaurants, statuses]);
+    setStatuses(statuses);
+  }, [setStatuses, statuses]);
+
+  useEffect(() => {
+    // Skip fetch if cached restaurants are still fresh (< 30 min old).
+    const { restaurants, lastFetched } = useMapStore.getState();
+    if (
+      lastFetched !== null &&
+      Date.now() - lastFetched < RESTAURANTS_TTL &&
+      restaurants.length > 0
+    ) {
+      return;
+    }
+
+    let cancelled = false;
+    fetch("/api/restaurants")
+      .then((r) => r.json())
+      .then((data: MapRestaurant[]) => {
+        if (!cancelled && Array.isArray(data)) setRestaurants(data);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, [setRestaurants]);
 
   return (
     <div className="relative h-full w-full">

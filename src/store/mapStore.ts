@@ -22,6 +22,7 @@ export type ActiveRoute = {
 
 export type MapState = {
   restaurants: MapRestaurant[];
+  lastFetched: number | null;
   statusMap: Map<string, RestaurantStatus>;
   selectedId: string | null;
 
@@ -38,8 +39,8 @@ export type MapState = {
   userLocation: [number, number] | null;
 
   // Actions
-  init: (
-    restaurants: MapRestaurant[],
+  setRestaurants: (restaurants: MapRestaurant[]) => void;
+  setStatuses: (
     statuses: { restaurantId: string; status: RestaurantStatus }[],
   ) => void;
   select: (id: string | null) => void;
@@ -59,8 +60,11 @@ export type MapState = {
   setMapStyleId: (id: string | null) => void;
 };
 
+export const RESTAURANTS_TTL = 30 * 60 * 1000;
+
 export const useMapStore = create<MapState>((set) => ({
   restaurants: [],
+  lastFetched: null,
   statusMap: new Map(),
   selectedId: null,
   cuisines: new Set(),
@@ -70,10 +74,11 @@ export const useMapStore = create<MapState>((set) => ({
   activeRoute: null,
   userLocation: null,
 
-  init: (restaurants, statuses) => {
-    const statusMap = new Map(statuses.map((s) => [s.restaurantId, s.status]));
-    set({ restaurants, statusMap });
-  },
+  setRestaurants: (restaurants) =>
+    set({ restaurants, lastFetched: Date.now() }),
+
+  setStatuses: (statuses) =>
+    set({ statusMap: new Map(statuses.map((s) => [s.restaurantId, s.status])) }),
 
   select: (id) => set({ selectedId: id }),
 

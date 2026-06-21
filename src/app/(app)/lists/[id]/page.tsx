@@ -122,8 +122,8 @@ export default function ListDetailPage() {
               render={<Button variant="ghost" size="icon-sm"><MoreHorizontal className="size-4" /></Button>}
             />
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={() => setEditOpen(true)}>Edit list</DropdownMenuItem>
-              <DropdownMenuItem onSelect={async () => {
+              <DropdownMenuItem onClick={() => setEditOpen(true)}>Edit list</DropdownMenuItem>
+              <DropdownMenuItem onClick={async () => {
                 if (!list) return
                 const res = await fetch(`/api/lists/${id}`, {
                   method: "PUT",
@@ -136,6 +136,10 @@ export default function ListDetailPage() {
                   setList(next)
                   updateList(id, next)
                   toast.success(list.is_public ? "Set to private" : "Set to public")
+                } else {
+                  const err = await res.json().catch(() => ({}))
+                  console.error("[ListDetail] toggle public error:", err)
+                  toast.error("Failed to update list")
                 }
               }}>
                 {list?.is_public

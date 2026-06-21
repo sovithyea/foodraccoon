@@ -29,14 +29,12 @@ export function CreateListSheet({ open, onOpenChange, onCreated, editList, onUpd
   const [isPublic, setIsPublic] = useState(editList?.is_public ?? false)
   const [saving, setSaving] = useState(false)
 
-  // Reset state when sheet opens/closes
   function handleOpenChange(nextOpen: boolean) {
-    if (!nextOpen) {
-      setEmoji(editList?.emoji ?? "📍")
-      setTitle(editList?.title ?? "")
-      setDescription(editList?.description ?? "")
-      setIsPublic(editList?.is_public ?? false)
-    }
+    // Always sync form to current editList when opening or closing
+    setEmoji(editList?.emoji ?? "📍")
+    setTitle(editList?.title ?? "")
+    setDescription(editList?.description ?? "")
+    setIsPublic(editList?.is_public ?? false)
     onOpenChange(nextOpen)
   }
 
@@ -67,7 +65,8 @@ export function CreateListSheet({ open, onOpenChange, onCreated, editList, onUpd
         toast.success("List created")
       }
       onOpenChange(false)
-    } catch {
+    } catch (err) {
+      console.error("[CreateListSheet] save error:", err)
       toast.error(isEdit ? "Failed to update list" : "Failed to create list")
     } finally {
       setSaving(false)

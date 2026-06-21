@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { Search, X, Clock } from "lucide-react";
 import { useMapStore } from "@/store/mapStore";
 import { SearchResultRow } from "@/components/search/SearchResultRow";
 import { SearchSkeleton } from "@/components/search/SearchSkeleton";
@@ -18,6 +18,19 @@ function SectionHeader({ title }: { title: string }) {
   );
 }
 
+const RECENT_KEY = "foodracoon:recent-searches";
+const RECENT_MAX = 8;
+
+function loadRecent(): string[] {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((q): q is string => typeof q === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
 export default function SearchPage() {
   const router = useRouter();
   const select = useMapStore((s) => s.select);
@@ -29,11 +42,36 @@ export default function SearchPage() {
   const [results, setResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [recent, setRecent] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
+    setRecent(loadRecent());
   }, []);
+
+  function saveRecent(q: string) {
+    const trimmed = q.trim();
+    if (trimmed.length < 2) return;
+    setRecent((prev) => {
+      const next = [trimmed, ...prev.filter((r) => r.toLowerCase() !== trimmed.toLowerCase())].slice(0, RECENT_MAX);
+      try { localStorage.setItem(RECENT_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
+
+  function removeRecent(q: string) {
+    setRecent((prev) => {
+      const next = prev.filter((r) => r !== q);
+      try { localStorage.setItem(RECENT_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
+
+  function clearRecent() {
+    setRecent([]);
+    try { localStorage.removeItem(RECENT_KEY); } catch {}
+  }
 
   // Request location once on mount so distances show in results.
   useEffect(() => {
@@ -77,12 +115,14 @@ export default function SearchPage() {
   }
 
   function handleSelect(restaurant: SearchResult) {
+    saveRecent(query);
     select(restaurant.id);
     setSearchFilter(query, [restaurant.id]);
     router.push("/");
   }
 
   function handleShowAll(allResults: SearchResult[]) {
+    saveRecent(query);
     setSearchFilter(query, allResults.map((r) => r.id));
     router.push("/");
   }
@@ -133,7 +173,44 @@ export default function SearchPage() {
           </p>
         )}
 
-        {!loading && !error && query.length < 2 && (
+        {!loading && !error && query.length < 2 && recent.length > 0 && (
+          <section>
+            <div className="flex items-center justify-between border-b px-4 pb-1.5 pt-3">
+              <p className="text-muted-foreground text-xs font-semibold uppercase tracking-wide">
+                Recent searches
+              </p>
+              <button
+                onClick={clearRecent}
+                className="text-muted-foreground hover:text-foreground text-xs font-medium"
+              >
+                Clear all
+              </button>
+            </div>
+            {recent.map((q) => (
+              <div
+                key={q}
+                className="hover:bg-muted/50 flex items-center gap-3 px-4 py-2.5 transition-colors"
+              >
+                <button
+                  onClick={() => { setQuery(q); inputRef.current?.focus(); }}
+                  className="flex flex-1 items-center gap-3 text-left min-w-0"
+                >
+                  <Clock className="text-muted-foreground size-4 shrink-0" />
+                  <span className="truncate text-sm">{q}</span>
+                </button>
+                <button
+                  onClick={() => removeRecent(q)}
+                  className="text-muted-foreground hover:text-foreground shrink-0"
+                  aria-label={`Remove ${q}`}
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {!loading && !error && query.length < 2 && recent.length === 0 && (
           <div className="text-muted-foreground px-4 py-12 text-center text-sm">
             <p className="font-medium">Find a restaurant</p>
             <p className="mt-1">Search by name, food type, or neighbourhood</p>
