@@ -12,7 +12,8 @@ export function FilterBar() {
   const cuisineCount = useMapStore((s) => s.cuisines.size);
   const priceCount = useMapStore((s) => s.prices.size);
   const nearMe = useMapStore((s) => s.nearMe);
-  const activeCount = cuisineCount + priceCount + (nearMe ? 1 : 0);
+  const openNow = useMapStore((s) => s.openNow);
+  const activeCount = cuisineCount + priceCount + (nearMe ? 1 : 0) + (openNow ? 1 : 0);
 
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-10 p-3">

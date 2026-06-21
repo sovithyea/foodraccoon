@@ -4,6 +4,8 @@ import { ArrowLeft, MapPin, Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { priceLabel } from "@/lib/restaurants";
+import { isOpenNow, getHoursStatus } from "@/lib/openNow";
+import { cn } from "@/lib/utils";
 
 export default async function RestaurantPage({
   params,
@@ -36,6 +38,14 @@ export default async function RestaurantPage({
       : null;
 
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${restaurant.latitude},${restaurant.longitude}${restaurant.google_place_id ? `&destination_place_id=${restaurant.google_place_id}` : ""}`;
+
+  const opening_hours = restaurant.opening_hours as { weekday_text: string[] } | null;
+  const nowUtc = new Date();
+  const hoursStatus = getHoursStatus(opening_hours, nowUtc);
+
+  // UTC+7 day index for highlighting today's row.
+  const todayIdx = new Date(nowUtc.getTime() + 7 * 60 * 60 * 1000).getUTCDay();
+  const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   return (
     <div className="mx-auto h-full max-w-2xl overflow-y-auto pb-20 md:pb-0">
@@ -110,6 +120,46 @@ export default async function RestaurantPage({
           <MapPin className="size-3.5 shrink-0" />
           Open in Google Maps
         </a>
+
+        {opening_hours && (
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <h2 className="font-semibold">Hours</h2>
+              {hoursStatus && (
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
+                    hoursStatus.open
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400"
+                      : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
+                  )}
+                >
+                  <span className={cn("size-1.5 rounded-full", hoursStatus.open ? "bg-green-500" : "bg-red-500")} />
+                  {hoursStatus.open ? "Open now" : "Closed"}
+                </span>
+              )}
+            </div>
+            <div className="space-y-1">
+              {DAYS.map((day, idx) => {
+                const entry = opening_hours.weekday_text.find((s) => s.startsWith(day + ":"));
+                const hoursStr = entry ? entry.slice(day.length + 1).trim() : "—";
+                const isToday = idx === todayIdx;
+                return (
+                  <div
+                    key={day}
+                    className={cn(
+                      "flex justify-between rounded px-2 py-1 text-sm",
+                      isToday ? "bg-accent font-medium text-foreground" : "text-muted-foreground",
+                    )}
+                  >
+                    <span>{day}</span>
+                    <span>{hoursStr}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <hr className="border-border" />
 

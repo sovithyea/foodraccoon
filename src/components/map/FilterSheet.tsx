@@ -31,6 +31,8 @@ export function FilterSheet({ open, onOpenChange }: Props) {
   const togglePrice = useMapStore((s) => s.togglePrice);
   const nearMeStore = useMapStore((s) => s.nearMe);
   const setNearMeStore = useMapStore((s) => s.setNearMe);
+  const openNowStore = useMapStore((s) => s.openNow);
+  const setOpenNowStore = useMapStore((s) => s.setOpenNow);
   const userLocation = useMapStore((s) => s.userLocation);
   const setUserLocation = useMapStore((s) => s.setUserLocation);
 
@@ -38,6 +40,7 @@ export function FilterSheet({ open, onOpenChange }: Props) {
   const [draftPrices, setDraftPrices] = useState<Set<number>>(new Set());
   const [draftCuisines, setDraftCuisines] = useState<Set<string>>(new Set());
   const [draftNearMe, setDraftNearMe] = useState(false);
+  const [draftOpenNow, setDraftOpenNow] = useState(false);
   const [locationPending, setLocationPending] = useState(false);
 
   // Seed the draft from the store each time the sheet opens.
@@ -46,6 +49,7 @@ export function FilterSheet({ open, onOpenChange }: Props) {
       setDraftPrices(new Set(prices));
       setDraftCuisines(new Set(cuisines));
       setDraftNearMe(nearMeStore);
+      setDraftOpenNow(openNowStore);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -90,6 +94,7 @@ export function FilterSheet({ open, onOpenChange }: Props) {
     setDraftPrices(new Set());
     setDraftCuisines(new Set());
     setDraftNearMe(false);
+    setDraftOpenNow(false);
   };
 
   const apply = () => {
@@ -103,6 +108,7 @@ export function FilterSheet({ open, onOpenChange }: Props) {
       if (draftCuisines.has(c) !== current.cuisines.has(c)) toggleCuisine(c);
     }
     setNearMeStore(draftNearMe);
+    setOpenNowStore(draftOpenNow);
     onOpenChange(false);
   };
 
@@ -199,11 +205,13 @@ export function FilterSheet({ open, onOpenChange }: Props) {
                 )}
               </div>
               <button
-                disabled
-                title="Coming in a later phase"
+                onClick={() => setDraftOpenNow((v) => !v)}
                 className={cn(
                   CHIP,
-                  "bg-card text-muted-foreground inline-flex cursor-not-allowed items-center gap-1.5",
+                  "inline-flex items-center gap-1.5",
+                  draftOpenNow
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-card text-foreground hover:bg-muted",
                 )}
               >
                 <Clock className="size-3.5" /> Open now

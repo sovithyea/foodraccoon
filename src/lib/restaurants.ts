@@ -16,7 +16,9 @@ export type MapRestaurant = Pick<
   | "google_rating"
   | "google_rating_count"
   | "cover_photo_url"
->;
+> & {
+  opening_hours: { weekday_text: string[] } | null;
+};
 
 export const PHNOM_PENH_CENTER: [number, number] = [104.9282, 11.5564]; // [lng, lat]
 export const DEFAULT_ZOOM = 12.5;

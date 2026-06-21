@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { MapRestaurant } from "@/lib/restaurants";
 
 const RESTAURANT_SELECT =
-  "id, name, address, district, google_place_id, latitude, longitude, cuisine_type, tags, price_range, google_rating, google_rating_count, cover_photo_url";
+  "id, name, address, district, google_place_id, latitude, longitude, cuisine_type, tags, price_range, google_rating, google_rating_count, cover_photo_url, opening_hours";
 const PAGE_SIZE = 1000;
 
 export async function GET() {

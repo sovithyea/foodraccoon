@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { useMapStore, type RestaurantStatus } from "@/store/mapStore";
 import { priceLabel } from "@/lib/restaurants";
+import { getHoursStatus } from "@/lib/openNow";
 import { haversineDistance, formatDistance, walkTimeMinutes } from "@/lib/geo";
 import { staticMapUrl } from "@/lib/staticMap";
 import { cn } from "@/lib/utils";
@@ -203,6 +204,26 @@ export function RestaurantPanel() {
           <>
             <SheetHeader className="pb-2">
               <SheetTitle className="text-xl">{restaurant.name}</SheetTitle>
+              {(() => {
+                const status = getHoursStatus(restaurant.opening_hours);
+                if (!status) return null;
+                return (
+                  <div className="flex items-center gap-1.5 text-sm">
+                    <span
+                      className={cn(
+                        "size-2 shrink-0 rounded-full",
+                        status.open ? "bg-green-500" : "bg-red-500",
+                      )}
+                    />
+                    <span className={status.open ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>
+                      {status.open ? "Open now" : "Closed"}
+                    </span>
+                    {status.timeLabel && (
+                      <span className="text-muted-foreground">· {status.timeLabel}</span>
+                    )}
+                  </div>
+                );
+              })()}
             </SheetHeader>
 
             <div className="space-y-4 overflow-y-auto px-4 pb-6">

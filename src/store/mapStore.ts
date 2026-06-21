@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { MapRestaurant } from "@/lib/restaurants";
 import { haversineDistance } from "@/lib/geo";
+import { isOpenNow } from "@/lib/openNow";
 
 export type RestaurantStatus = "want_to_try" | "visited" | "favourite";
 
@@ -31,6 +32,7 @@ export type MapState = {
   cuisines: Set<string>;
   prices: Set<number>;
   nearMe: boolean;
+  openNow: boolean;
 
   // Search
   searchQuery: string;
@@ -49,6 +51,7 @@ export type MapState = {
   toggleCuisine: (c: string) => void;
   togglePrice: (p: number) => void;
   setNearMe: (v: boolean) => void;
+  setOpenNow: (v: boolean) => void;
   clearFilters: () => void;
   updateStatus: (id: string, status: RestaurantStatus) => void;
   clearStatus: (id: string) => void;
@@ -73,6 +76,7 @@ export const useMapStore = create<MapState>((set) => ({
   cuisines: new Set(),
   prices: new Set(),
   nearMe: false,
+  openNow: false,
   searchQuery: "",
   searchFilterIds: null,
   activeRoute: null,
@@ -101,8 +105,9 @@ export const useMapStore = create<MapState>((set) => ({
     }),
 
   setNearMe: (v) => set({ nearMe: v }),
+  setOpenNow: (v) => set({ openNow: v }),
 
-  clearFilters: () => set({ cuisines: new Set(), prices: new Set(), nearMe: false }),
+  clearFilters: () => set({ cuisines: new Set(), prices: new Set(), nearMe: false, openNow: false }),
 
   updateStatus: (id, status) =>
     set((s) => {
@@ -143,6 +148,7 @@ export function filterRestaurants(s: MapState): MapRestaurant[] {
       !s.nearMe ||
       s.userLocation === null ||
       haversineDistance(s.userLocation[1], s.userLocation[0], r.latitude, r.longitude) <= 1000;
-    return cuisineOk && priceOk && nearMeOk;
+    const openNowOk = !s.openNow || isOpenNow(r.opening_hours);
+    return cuisineOk && priceOk && nearMeOk && openNowOk;
   });
 }
