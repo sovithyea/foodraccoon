@@ -9,7 +9,7 @@ export async function DELETE(
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ ok: true }); // no-op when not signed in
+  if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
   await supabase
     .from("user_restaurants")

@@ -19,8 +19,8 @@ export default function SignupPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+    if (password.length < 12) {
+      setError("Password must be at least 12 characters.");
       return;
     }
     setLoading(true);
@@ -86,7 +86,7 @@ export default function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <p className="text-xs text-[#8C7E72]">Minimum 6 characters</p>
+              <p className="text-xs text-[#8C7E72]">Minimum 12 characters</p>
             </div>
 
             {error && <p className="text-sm text-red-600">{error}</p>}
