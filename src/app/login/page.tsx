@@ -155,6 +155,12 @@ export default function LoginPage() {
             </Link>
           </p>
         )}
+
+        <p className="text-center text-xs text-[#8C7E72]">
+          <Link href="/terms" className="hover:text-[#D44C2A] hover:underline">Terms</Link>
+          {" · "}
+          <Link href="/privacy" className="hover:text-[#D44C2A] hover:underline">Privacy</Link>
+        </p>
       </div>
     </div>
   );

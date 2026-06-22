@@ -91,6 +91,13 @@ export default function SignupPage() {
 
             {error && <p className="text-sm text-red-600">{error}</p>}
 
+            <p className="text-xs text-[#8C7E72] text-center">
+              By creating an account you agree to our{" "}
+              <Link href="/terms" className="text-[#D44C2A] hover:underline">Terms</Link>
+              {" "}and{" "}
+              <Link href="/privacy" className="text-[#D44C2A] hover:underline">Privacy Policy</Link>.
+            </p>
+
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Creating account…" : "Create account"}
             </Button>

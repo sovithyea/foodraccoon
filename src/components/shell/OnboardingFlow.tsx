@@ -113,7 +113,7 @@ export function OnboardingFlow() {
       </div>
 
       {/* Dot indicators */}
-      <div className="flex items-center justify-center gap-2 pb-12">
+      <div className="flex items-center justify-center gap-2 pb-4">
         {[0, 1, 2].map((i) => (
           <div
             key={i}
@@ -124,6 +124,12 @@ export function OnboardingFlow() {
           />
         ))}
       </div>
+
+      <p className="pb-8 text-center text-xs text-[#8C7E72]">
+        <a href="/terms" className="hover:text-[#D44C2A] hover:underline">Terms</a>
+        {" · "}
+        <a href="/privacy" className="hover:text-[#D44C2A] hover:underline">Privacy</a>
+      </p>
     </div>
   );
 }
