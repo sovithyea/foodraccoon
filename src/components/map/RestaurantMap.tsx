@@ -116,7 +116,9 @@ export function RestaurantMap() {
       attributionControl: false,
     });
     mapRef.current = map;
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
+    if (window.innerWidth >= 768) {
+      map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "bottom-right");
+    }
 
     function setupRestaurantLayers() {
       const sid = mapStyleIdRef.current;
