@@ -51,7 +51,7 @@ export default function LoginPage() {
         {/* Wordmark */}
         <div className="text-center space-y-1">
           <Link href="/" className="text-3xl font-extrabold tracking-tight text-[#D44C2A]">
-            foodracoon
+            foodraccoon
           </Link>
           <p className="text-sm text-[#8C7E72]">Phnom Penh restaurant discovery</p>
         </div>

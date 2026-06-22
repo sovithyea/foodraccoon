@@ -55,7 +55,7 @@ export function Nav() {
           href="/"
           className="mb-5 px-3 text-2xl font-extrabold tracking-tight text-[#D44C2A]"
         >
-          foodracoon
+          foodraccoon
         </Link>
 
         <ul className="flex flex-1 flex-col gap-0.5">

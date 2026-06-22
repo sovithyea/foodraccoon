@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Share2, Download, X } from "lucide-react";
 
-const DISMISS_KEY = "foodracoon:install-dismissed";
+const DISMISS_KEY = "foodraccoon:install-dismissed";
 const SNOOZE_MS = 7 * 24 * 60 * 60 * 1000;
 
 function isDismissed(): boolean {
@@ -90,7 +90,7 @@ export function InstallBanner() {
         <p className="truncate text-xs text-[#2C2420]">
           {platform === "ios"
             ? "Tap Share then “Add to Home Screen”"
-            : "Install Foodracoon for quick access"}
+            : "Install Foodraccoon for quick access"}
         </p>
       </div>
 

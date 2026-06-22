@@ -415,7 +415,7 @@ async function processPlaceIds(
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function run() {
-  console.log('Foodracoon -- Comprehensive Phnom Penh Import v2')
+  console.log('Foodraccoon -- Comprehensive Phnom Penh Import v2')
   console.log('='.repeat(55))
 
   const allPlaceIds = new Set<string>()

@@ -20,7 +20,7 @@ function SectionHeader({ title }: { title: string }) {
   );
 }
 
-const RECENT_KEY = "foodracoon:recent-searches";
+const RECENT_KEY = "foodraccoon:recent-searches";
 const RECENT_MAX = 8;
 
 function loadRecent(): string[] {

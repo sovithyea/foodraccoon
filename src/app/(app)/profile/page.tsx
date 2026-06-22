@@ -32,7 +32,7 @@ export default async function ProfilePage() {
       <div className="flex h-full flex-col items-center justify-center px-6 text-center">
         <div className="w-full max-w-xs space-y-6">
           <div className="space-y-2">
-            <p className="text-3xl font-extrabold tracking-tight text-[#D44C2A]">foodracoon</p>
+            <p className="text-3xl font-extrabold tracking-tight text-[#D44C2A]">foodraccoon</p>
             <p className="text-sm text-[#8C7E72]">Track the restaurants you love in Phnom Penh</p>
           </div>
           <div className="rounded-2xl border border-[#D4C8B4] bg-[#EDE6D8] p-5 text-left space-y-3">
@@ -102,7 +102,7 @@ export default async function ProfilePage() {
       ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
       : "—";
 
-  const displayName = profile?.display_name ?? "Foodracoon user";
+  const displayName = profile?.display_name ?? "Foodraccoon user";
   const initials    = displayName.slice(0, 2).toUpperCase();
   const color       = avatarColor(displayName);
 
