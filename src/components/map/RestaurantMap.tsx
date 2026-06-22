@@ -75,6 +75,8 @@ export function RestaurantMap() {
   const mapStyleId = useMapStore((s) => s.mapStyleId);
   const nearMe = useMapStore((s) => s.nearMe);
   const openNow = useMapStore((s) => s.openNow);
+  const flyToTarget = useMapStore((s) => s.flyToTarget);
+  const setFlyToTarget = useMapStore((s) => s.setFlyToTarget);
 
   const geojson = useMemo<FeatureCollection>(() => {
     let filtered = filterRestaurants({
@@ -248,6 +250,14 @@ export function RestaurantMap() {
       map.flyTo({ center: [r.longitude, r.latitude], zoom: 15, duration: 600 });
     }
   }, [selectedId, restaurants]);
+
+  // Fly to user location when locate-me button fires.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !loadedRef.current || !flyToTarget) return;
+    map.flyTo({ center: flyToTarget, zoom: 15, duration: 600 });
+    setFlyToTarget(null);
+  }, [flyToTarget, setFlyToTarget]);
 
   // Fit map bounds when a search filter is applied.
   useEffect(() => {

@@ -61,6 +61,10 @@ export type MapState = {
   clearRoute: () => void;
   setUserLocation: (coords: [number, number]) => void;
 
+  // Locate me
+  flyToTarget: [number, number] | null;
+  setFlyToTarget: (coords: [number, number] | null) => void;
+
   // Map style
   mapStyleId: string | null;
   setMapStyleId: (id: string | null) => void;
@@ -131,6 +135,9 @@ export const useMapStore = create<MapState>((set) => ({
   setRoute: (route) => set({ activeRoute: route }),
   clearRoute: () => set({ activeRoute: null, userLocation: null }),
   setUserLocation: (coords) => set({ userLocation: coords }),
+
+  flyToTarget: null,
+  setFlyToTarget: (coords) => set({ flyToTarget: coords }),
 
   mapStyleId: null,
   setMapStyleId: (id) => set({ mapStyleId: id }),

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal, Navigation } from "lucide-react";
 import { useMapStore } from "@/store/mapStore";
 import { FilterSheet } from "./FilterSheet";
 import { cn } from "@/lib/utils";
@@ -11,12 +11,27 @@ export function FilterBar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  const cuisineCount = useMapStore((s) => s.cuisines.size);
-  const priceCount   = useMapStore((s) => s.prices.size);
-  const nearMe       = useMapStore((s) => s.nearMe);
-  const openNow      = useMapStore((s) => s.openNow);
-  const activeCount  = cuisineCount + priceCount + (nearMe ? 1 : 0) + (openNow ? 1 : 0);
-  const panelOpen    = useMapStore((s) => !!s.selectedId);
+  const cuisineCount    = useMapStore((s) => s.cuisines.size);
+  const priceCount      = useMapStore((s) => s.prices.size);
+  const nearMe          = useMapStore((s) => s.nearMe);
+  const openNow         = useMapStore((s) => s.openNow);
+  const activeCount     = cuisineCount + priceCount + (nearMe ? 1 : 0) + (openNow ? 1 : 0);
+  const panelOpen       = useMapStore((s) => !!s.selectedId);
+  const userLocation    = useMapStore((s) => s.userLocation);
+  const setUserLocation = useMapStore((s) => s.setUserLocation);
+  const setFlyToTarget  = useMapStore((s) => s.setFlyToTarget);
+
+  function locateMe() {
+    if (userLocation) {
+      setFlyToTarget(userLocation);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const coords: [number, number] = [pos.coords.longitude, pos.coords.latitude];
+      setUserLocation(coords);
+      setFlyToTarget(coords);
+    });
+  }
 
   return (
     <div
@@ -65,6 +80,19 @@ export function FilterBar() {
             </span>
           )}
         </div>
+
+        {/* Locate me */}
+        <button
+          onClick={locateMe}
+          aria-label="Centre map on my location"
+          className={cn(
+            "inline-flex size-10 shrink-0 items-center justify-center rounded-full",
+            "border border-[#D4C8B4] bg-[#F5F0E8] shadow-sm text-[#2C2420]",
+            "hover:bg-[#EDE6D8] active:scale-90 transition-all",
+          )}
+        >
+          <Navigation className="size-[15px]" />
+        </button>
       </div>
 
       <FilterSheet open={open} onOpenChange={setOpen} />
