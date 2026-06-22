@@ -44,7 +44,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#D44C2A" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="FoodRaccoon" />
       </head>
       <body className="bg-background text-foreground min-h-full" suppressHydrationWarning>
