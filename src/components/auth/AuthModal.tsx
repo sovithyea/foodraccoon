@@ -18,14 +18,27 @@ export function AuthModal() {
         }`}
       />
 
-      {/* Sheet */}
+      {/* Sheet — bottom on mobile, centered dialog on desktop */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Sign in"
-        className={`fixed inset-x-0 bottom-0 z-[200] mx-auto max-w-sm rounded-t-2xl bg-[#F5F0E8] px-8 pb-12 pt-8 shadow-[0_-4px_24px_rgba(44,36,32,0.12)] transition-transform duration-300 ease-out ${
-          isOpen ? "translate-y-0" : "pointer-events-none translate-y-full"
-        }`}
+        className={[
+          // Base
+          "fixed z-[200] mx-auto w-full max-w-sm bg-[#F5F0E8] px-8 pb-12 pt-8",
+          // Mobile: anchored bottom sheet
+          "inset-x-0 bottom-0 rounded-t-2xl shadow-[0_-4px_24px_rgba(44,36,32,0.12)]",
+          // Desktop: centered dialog (overrides mobile positioning)
+          "md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:rounded-2xl md:shadow-xl",
+          // Horizontal centering on desktop (always on)
+          "md:-translate-x-1/2",
+          // Transition
+          "transition-[transform,opacity] duration-300 ease-out",
+          // State: open
+          isOpen
+            ? "translate-y-0 opacity-100 md:-translate-y-1/2 md:scale-100"
+            : "pointer-events-none translate-y-full opacity-0 md:-translate-y-1/2 md:scale-95",
+        ].join(" ")}
       >
         <div className="flex flex-col items-center gap-5 text-center">
           <button
