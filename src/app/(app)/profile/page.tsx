@@ -61,6 +61,11 @@ export default async function ProfilePage() {
               Create account
             </Link>
           </div>
+          <p className="text-xs text-[#8C7E72]">
+            <Link href="/terms" className="hover:text-[#D44C2A] hover:underline">Terms</Link>
+            {" · "}
+            <Link href="/privacy" className="hover:text-[#D44C2A] hover:underline">Privacy</Link>
+          </p>
         </div>
       </div>
     );
@@ -212,6 +217,12 @@ export default async function ProfilePage() {
           Sign out
         </button>
       </form>
+
+      <p className="mt-4 text-center text-xs text-[#8C7E72]">
+        <Link href="/terms" className="hover:text-[#D44C2A] hover:underline">Terms</Link>
+        {" · "}
+        <Link href="/privacy" className="hover:text-[#D44C2A] hover:underline">Privacy</Link>
+      </p>
     </div>
   );
 }
