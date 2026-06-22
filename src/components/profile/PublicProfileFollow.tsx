@@ -81,7 +81,10 @@ export function PublicProfileFollow({
     const res = await fetch(`/api/users/${username}/follow`, {
       method: isFollowing ? "DELETE" : "POST",
     });
-    if (res.ok) setIsFollowing((v) => !v);
+    if (res.ok) {
+      setIsFollowing((v) => !v);
+      router.refresh();
+    }
     setFollowLoading(false);
   }
 
