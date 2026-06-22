@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { priceLabel } from "@/lib/restaurants";
 import { formatDistance } from "@/lib/geo";
 import { useMapStore, type RestaurantStatus } from "@/store/mapStore";
@@ -18,11 +19,15 @@ export function SearchResultRow({
   subtitle,
   distanceMetres,
   onSelect,
+  nameNode,
+  isFocused,
 }: {
   restaurant: SearchResult;
   subtitle?: string;
   distanceMetres?: number;
   onSelect: () => void;
+  nameNode?: React.ReactNode;
+  isFocused?: boolean;
 }) {
   const userStatus = useMapStore((s) => s.statusMap.get(restaurant.id));
   const barColor   = userStatus ? STATUS_BAR[userStatus] : "bg-[#D4C8B4]";
@@ -30,7 +35,10 @@ export function SearchResultRow({
   return (
     <button
       onClick={onSelect}
-      className="flex w-full items-stretch px-4 text-left transition-colors hover:bg-[#EDE6D8]"
+      className={cn(
+        "flex w-full items-stretch px-4 text-left transition-colors hover:bg-[#EDE6D8]",
+        isFocused && "bg-[#EDE6D8]",
+      )}
     >
       {/* Status bar */}
       <span className={cn("my-1.5 mr-3 w-[3px] shrink-0 rounded-full", barColor)} />
@@ -39,7 +47,7 @@ export function SearchResultRow({
       <div className="flex-1 min-w-0 border-b border-[#EDE6D8] py-3">
         <div className="flex items-baseline justify-between gap-2">
           <span className="truncate text-sm font-semibold text-[#2C2420]">
-            {restaurant.name}
+            {nameNode ?? restaurant.name}
           </span>
           <div className="flex shrink-0 items-center gap-2 text-xs text-[#8C7E72]">
             {distanceMetres !== undefined && (

@@ -164,7 +164,7 @@ export function PublicProfileFollow({
                   className="flex items-center gap-3 rounded-xl px-2 py-2.5 transition-colors hover:bg-[#EDE6D8]"
                 >
                   {p.avatar_url ? (
-                    <img src={p.avatar_url} alt={name} className="size-9 rounded-full object-cover" />
+                    <img src={p.avatar_url} alt={name} width={36} height={36} className="size-9 rounded-full object-cover" />
                   ) : (
                     <div
                       className="flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"

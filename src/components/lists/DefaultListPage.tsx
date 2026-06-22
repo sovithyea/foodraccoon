@@ -95,7 +95,7 @@ export function DefaultListPage({ status }: { status: keyof typeof CONFIG }) {
                     className="bg-card border-border hover:bg-accent/30 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors"
                   >
                     {r.cover_photo_url ? (
-                      <img src={r.cover_photo_url} alt="" className="size-12 rounded-md object-cover shrink-0" />
+                      <img src={r.cover_photo_url} alt="" width={48} height={48} className="size-12 rounded-md object-cover shrink-0" />
                     ) : (
                       <div className="bg-muted size-12 rounded-md shrink-0 flex items-center justify-center">
                         <Utensils className="size-5 text-muted-foreground/50" />

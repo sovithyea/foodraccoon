@@ -58,7 +58,7 @@ export function OnboardingFlow() {
         <Slide index={0} current={slide}>
           <div className="flex flex-col items-center justify-center gap-8 px-8 text-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/icon-512x512.png" alt="FoodRaccoon" className="size-24 rounded-3xl shadow-lg" />
+            <img src="/icon-512x512.png" alt="FoodRaccoon" width={96} height={96} className="size-24 rounded-3xl shadow-lg" />
             <div className="space-y-2">
               <h1 className="text-3xl font-bold text-[#2C2420]">FoodRaccoon</h1>
               <p className="text-base text-[#8C7E72]">Discover Phnom Penh's best restaurants</p>

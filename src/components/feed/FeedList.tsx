@@ -108,6 +108,8 @@ function FeedCard({ item }: { item: FeedItem }) {
         <img
           src={item.avatar_url}
           alt={displayName}
+          width={36}
+          height={36}
           className="size-9 shrink-0 rounded-full object-cover"
         />
       ) : (

@@ -58,10 +58,11 @@ export async function PATCH(
     updates.cuisine_type = body.cuisine_type;
   }
   if ("price_range" in body) {
-    if (body.price_range !== null && (!Number.isInteger(body.price_range) || body.price_range < 1 || body.price_range > 4)) {
+    const pr = body.price_range;
+    if (pr !== null && pr !== undefined && (!Number.isInteger(pr) || pr < 1 || pr > 4)) {
       return BadRequest("price_range must be an integer between 1 and 4");
     }
-    updates.price_range = body.price_range;
+    updates.price_range = pr ?? null;
   }
   if ("district" in body) {
     if (typeof body.district !== "string") return BadRequest("district must be a string");

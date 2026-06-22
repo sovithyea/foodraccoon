@@ -126,6 +126,8 @@ export default async function ProfilePage() {
           <img
             src={profile.avatar_url}
             alt={displayName}
+            width={80}
+            height={80}
             className="size-20 rounded-full object-cover"
             style={{ boxShadow: `0 0 0 3.5px #EDE6D8, 0 0 0 6px #D44C2A` }}
           />

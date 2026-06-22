@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Navigation } from "lucide-react";
+import { Navigation } from "lucide-react";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { createClient } from "@/lib/supabase/server";
 import { priceLabel } from "@/lib/restaurants";
 import { getHoursStatus } from "@/lib/openNow";
@@ -64,24 +65,16 @@ export default async function RestaurantPage({
       {/* ── Hero ── */}
       <div className="relative h-[220px] w-full shrink-0 overflow-hidden">
         {restaurant.cover_photo_url ? (
-          <img src={restaurant.cover_photo_url} alt={restaurant.name} className="h-full w-full object-cover" />
-        ) : null}
-        <div
-          className="h-full w-full"
-          style={{
-            background: heroGradient(restaurant.name),
-            display: restaurant.cover_photo_url ? "none" : "block",
-          }}
-        />
+          <img src={restaurant.cover_photo_url} alt={restaurant.name} width={800} height={220} className="h-full w-full object-cover" />
+        ) : (
+          <div className="h-full w-full" style={{ background: heroGradient(restaurant.name) }} />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
-        {/* Back button */}
-        <Link
-          href="/"
-          className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/30 px-3 py-1.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-black/50"
-        >
-          <ArrowLeft className="size-4" /> Back
-        </Link>
+        {/* Breadcrumb */}
+        <div className="absolute left-3 top-3 rounded-full bg-black/30 px-3 py-1.5 backdrop-blur-sm">
+          <Breadcrumb items={[{ label: "Map", href: "/" }, { label: restaurant.name }]} />
+        </div>
 
         {/* Name + meta */}
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-4">
@@ -206,7 +199,7 @@ export default async function RestaurantPage({
                 return (
                   <div key={i} className="flex gap-3 rounded-xl border border-[#D4C8B4] bg-[#EDE6D8] p-3.5">
                     {profile?.avatar_url ? (
-                      <img src={profile.avatar_url} alt={name} className="size-9 shrink-0 rounded-full object-cover" />
+                      <img src={profile.avatar_url} alt={name} width={36} height={36} className="size-9 shrink-0 rounded-full object-cover" />
                     ) : (
                       <div
                         className="flex size-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"

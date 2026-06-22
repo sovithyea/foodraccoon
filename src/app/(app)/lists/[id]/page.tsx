@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, Link2, MoreHorizontal, Globe, Lock } from "lucide-react"
+import { Link2, MoreHorizontal, Globe, Lock } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -14,7 +14,8 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import type { ListRestaurantDetail, ListWithCount } from "@/lib/lists"
-import Link from "next/link"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { Breadcrumb } from "@/components/ui/breadcrumb"
 
 export default function ListDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -27,6 +28,8 @@ export default function ListDetailPage() {
   const [loading, setLoading] = useState(true)
   const [editOpen, setEditOpen] = useState(false)
   const [username, setUsername] = useState<string | null>(null)
+  const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null)
+  const [removing, setRemoving] = useState(false)
 
   useEffect(() => {
     // Get username for share link
@@ -67,15 +70,19 @@ export default function ListDetailPage() {
     router.push("/")
   }
 
-  async function removeFromList(restaurantId: string) {
-    setItems((prev) => prev.filter((i) => i.restaurant_id !== restaurantId))
-    const res = await fetch(`/api/lists/${id}/restaurants/${restaurantId}`, { method: "DELETE" })
+  async function confirmRemove() {
+    if (!confirmRemoveId) return;
+    setRemoving(true);
+    const restaurantId = confirmRemoveId;
+    setItems((prev) => prev.filter((i) => i.restaurant_id !== restaurantId));
+    setConfirmRemoveId(null);
+    const res = await fetch(`/api/lists/${id}/restaurants/${restaurantId}`, { method: "DELETE" });
+    setRemoving(false);
     if (!res.ok) {
-      toast.error("Failed to remove")
-      // Revert by reloading
-      fetch(`/api/lists/${id}/restaurants`).then(r => r.json()).then(setItems)
+      toast.error("Failed to remove");
+      fetch(`/api/lists/${id}/restaurants`).then(r => r.json()).then(setItems);
     } else {
-      if (list) updateList(id, { restaurant_count: list.restaurant_count - 1 })
+      if (list) updateList(id, { restaurant_count: list.restaurant_count - 1 });
     }
   }
 
@@ -93,16 +100,17 @@ export default function ListDetailPage() {
     <div className="flex h-full flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-2 border-b px-4 py-3">
-        <Link href="/lists">
-          <Button variant="ghost" size="icon-sm"><ArrowLeft className="size-4" /></Button>
-        </Link>
         <div className="flex-1 min-w-0">
           {list ? (
             <>
-              <h1 className="text-base font-semibold truncate">
-                {list.emoji} {list.title}
-              </h1>
-              <p className="text-xs text-muted-foreground">
+              <Breadcrumb
+                variant="dark"
+                items={[
+                  { label: "Lists", href: "/lists" },
+                  { label: [list.emoji, list.title].filter(Boolean).join(" ") },
+                ]}
+              />
+              <p className="mt-0.5 text-xs text-muted-foreground">
                 {items.length} {items.length === 1 ? "place" : "places"} ·{" "}
                 {list.is_public ? "Public" : "Private"}
               </p>
@@ -168,7 +176,7 @@ export default function ListDetailPage() {
             key={item.restaurant_id}
             item={item}
             onClick={() => openOnMap(item.restaurant_id)}
-            onRemove={() => removeFromList(item.restaurant_id)}
+            onRemove={() => setConfirmRemoveId(item.restaurant_id)}
           />
         ))}
 
@@ -192,6 +200,20 @@ export default function ListDetailPage() {
           }}
         />
       )}
+
+      {/* Confirm remove dialog */}
+      <ConfirmDialog
+        open={!!confirmRemoveId}
+        onOpenChange={(open) => { if (!open) setConfirmRemoveId(null); }}
+        title="Remove from list"
+        description={(() => {
+          const item = items.find(i => i.restaurant_id === confirmRemoveId);
+          return item ? `Remove "${item.restaurant.name}" from this list?` : "Remove this restaurant from the list?";
+        })()}
+        confirmLabel="Remove"
+        onConfirm={confirmRemove}
+        loading={removing}
+      />
     </div>
   )
 }

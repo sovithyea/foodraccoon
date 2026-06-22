@@ -83,6 +83,8 @@ function PanelContent({
   onToggleList,
   onOpenCreateList,
 }: PanelContentProps) {
+  const [coverError, setCoverError] = useState(false);
+  useEffect(() => { setCoverError(false); }, [restaurant.id]);
   const hoursStatus = getHoursStatus(restaurant.opening_hours);
   const nowUtc = new Date();
   const todayIdx = new Date(nowUtc.getTime() + 7 * 60 * 60 * 1000).getUTCDay();
@@ -92,24 +94,21 @@ function PanelContent({
 
       {/* ── Hero ── */}
       <div className="relative h-[200px] w-full shrink-0 overflow-hidden">
-        {restaurant.cover_photo_url ? (
+        {restaurant.cover_photo_url && !coverError ? (
           <img
             src={restaurant.cover_photo_url}
             alt={restaurant.name}
+            width={800}
+            height={200}
             className="h-full w-full object-cover"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).style.display = "none";
-              (e.currentTarget.nextElementSibling as HTMLElement).style.display = "block";
-            }}
+            onError={() => setCoverError(true)}
           />
-        ) : null}
-        <div
-          className="h-full w-full"
-          style={{
-            background: heroGradient(restaurant.name),
-            display: restaurant.cover_photo_url ? "none" : "block",
-          }}
-        />
+        ) : (
+          <div
+            className="h-full w-full"
+            style={{ background: heroGradient(restaurant.name) }}
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
 
         {!isDesktop && (

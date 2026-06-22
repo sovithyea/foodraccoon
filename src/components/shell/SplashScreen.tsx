@@ -30,7 +30,7 @@ export function SplashScreen() {
       )}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/icon-512x512.png" alt="FoodRaccoon" className="size-24 rounded-3xl shadow-lg" />
+      <img src="/icon-512x512.png" alt="FoodRaccoon" width={96} height={96} className="size-24 rounded-3xl shadow-lg" />
     </div>
   );
 }
