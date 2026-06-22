@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { CreateListSheet } from "@/components/lists/CreateListSheet";
 import { useListsStore } from "@/store/listsStore";
 import { createClient } from "@/lib/supabase/client";
+import { useAuthModal } from "@/hooks/useAuthModal";
 import { RatingSection } from "@/components/restaurant/RatingSection";
 import type { ListWithMembership } from "@/lib/lists";
 
@@ -384,6 +385,8 @@ export function RestaurantPanel() {
   const setUserLocation = useMapStore((s) => s.setUserLocation);
   const { addList }     = useListsStore();
 
+  const openAuthModal = useAuthModal((s) => s.open);
+
   const [isDesktop, setIsDesktop]             = useState<boolean | null>(null);
   const [locationPending, setLocationPending] = useState(false);
   const [communityRating, setCommunityRating] = useState<{ avg: number; count: number } | null>(null);
@@ -512,7 +515,11 @@ export function RestaurantPanel() {
     reviews,
     reviewsLoading,
     showAddToList,
-    onToggleAddToList: () => setShowAddToList((v) => !v),
+    onToggleAddToList: async () => {
+      const { data: { user } } = await createClient().auth.getUser();
+      if (!user) { openAuthModal(); return; }
+      setShowAddToList((v) => !v);
+    },
     listItems,
     listsLoading,
     onToggleList: toggleList,

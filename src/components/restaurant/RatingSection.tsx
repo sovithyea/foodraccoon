@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMapStore, type RestaurantStatus } from "@/store/mapStore";
+import { useAuthModal } from "@/hooks/useAuthModal";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 const STATUS_OPTIONS = [
@@ -39,10 +41,13 @@ export function RatingSection({ restaurantId }: { restaurantId: string }) {
   const currentStatus = useMapStore((s) => s.statusMap.get(restaurantId));
   const updateStatus  = useMapStore((s) => s.updateStatus);
   const clearStatus   = useMapStore((s) => s.clearStatus);
+  const openAuthModal = useAuthModal((s) => s.open);
   const [pendingRating, setPendingRating] = useState<number | null>(null);
   const [review, setReview] = useState("");
 
   async function setStatus(status: RestaurantStatus) {
+    const { data: { user } } = await createClient().auth.getUser();
+    if (!user) { openAuthModal(); return; }
     if (currentStatus === status) {
       clearStatus(restaurantId);
       toast.success("Removed");

@@ -8,6 +8,7 @@ import { ListCard } from "@/components/lists/ListCard"
 import { CreateListSheet } from "@/components/lists/CreateListSheet"
 import { useListsStore } from "@/store/listsStore"
 import { useMapStore } from "@/store/mapStore"
+import { useAuthModal } from "@/hooks/useAuthModal"
 import type { ListWithCount } from "@/lib/lists"
 import Link from "next/link"
 
@@ -69,6 +70,7 @@ const DEFAULT_LISTS = [
 export default function ListsPage() {
   const router = useRouter()
   const { lists, setLists, addList, updateList, removeList } = useListsStore()
+  const openAuthModal = useAuthModal((s) => s.open)
   const [loading, setLoading]     = useState(true)
   const [createOpen, setCreateOpen] = useState(false)
   const [authed, setAuthed]       = useState(false)
@@ -107,14 +109,12 @@ export default function ListsPage() {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-[#D4C8B4] px-4 py-3.5">
         <h1 className="text-lg font-bold tracking-tight text-[#2C2420]">My Lists</h1>
-        {authed && (
-          <button
-            onClick={() => setCreateOpen(true)}
-            className="flex items-center gap-1.5 rounded-full bg-[#D44C2A] px-3.5 py-1.5 text-xs font-semibold text-white shadow-[0_2px_8px_rgba(212,76,42,0.25)] transition-all hover:bg-[#B83D1E] active:scale-95"
-          >
-            <Plus className="size-3.5" /> New list
-          </button>
-        )}
+        <button
+          onClick={() => authed ? setCreateOpen(true) : openAuthModal()}
+          className="flex items-center gap-1.5 rounded-full bg-[#D44C2A] px-3.5 py-1.5 text-xs font-semibold text-white shadow-[0_2px_8px_rgba(212,76,42,0.25)] transition-all hover:bg-[#B83D1E] active:scale-95"
+        >
+          <Plus className="size-3.5" /> New list
+        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-24 md:pb-4">
@@ -155,15 +155,6 @@ export default function ListsPage() {
           </div>
         )}
 
-        {/* Auth prompt */}
-        {!loading && !authed && (
-          <p className="text-center text-sm text-[#8C7E72]">
-            <Link href="/login" className="font-semibold text-[#D44C2A] underline underline-offset-2">
-              Sign in
-            </Link>{" "}
-            to create and manage custom lists.
-          </p>
-        )}
 
         {/* Custom list cards */}
         <div className="flex flex-col gap-2">
@@ -177,10 +168,10 @@ export default function ListsPage() {
             />
           ))}
 
-          {/* Dashed "create" card — only when authed and not loading */}
-          {!loading && authed && (
+          {/* Dashed "create" card */}
+          {!loading && (
             <button
-              onClick={() => setCreateOpen(true)}
+              onClick={() => authed ? setCreateOpen(true) : openAuthModal()}
               className="flex items-center gap-3 rounded-2xl border border-dashed border-[#D4C8B4] px-4 py-3.5 text-left transition-all hover:border-[#D44C2A] hover:bg-[rgba(212,76,42,0.04)] active:scale-[.98]"
             >
               <div className="flex size-9 shrink-0 items-center justify-center rounded-[10px] border border-dashed border-[#D4C8B4]">
