@@ -116,6 +116,7 @@ export function RestaurantMap() {
       center: PHNOM_PENH_CENTER,
       zoom: DEFAULT_ZOOM,
       attributionControl: false,
+      padding: { top: 0, bottom: 100, left: 0, right: 0 },
     });
     mapRef.current = map;
     if (window.innerWidth >= 768) {
