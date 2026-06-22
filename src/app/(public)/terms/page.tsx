@@ -71,7 +71,7 @@ export default function TermsPage() {
         </Section>
 
         <Section title="11. Contact">
-          <p>Questions about these terms? Email us at <a href="mailto:prachsovithyea11@gmail.com" className="text-[#D44C2A] underline underline-offset-2">prachsovithyea11@gmail.com</a>.</p>
+          <p>Questions about these terms? Email us at <a href="mailto:admin@foodracoon.com" className="text-[#D44C2A] underline underline-offset-2">admin@foodracoon.com</a>.</p>
         </Section>
 
         <footer className="border-t border-[#D4C8B4] pt-6 text-sm text-[#8C7E72] flex flex-wrap gap-4">

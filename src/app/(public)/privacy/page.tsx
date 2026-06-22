@@ -46,7 +46,7 @@ export default function PrivacyPage() {
         </Section>
 
         <Section title="6. Your Rights">
-          <p>You may request a copy of your data or ask us to delete your account and all associated data at any time. Email <a href="mailto:prachsovithyea11@gmail.com" className="text-[#D44C2A] underline underline-offset-2">prachsovithyea11@gmail.com</a> with your request. We will action it within 30 days.</p>
+          <p>You may request a copy of your data or ask us to delete your account and all associated data at any time. Email <a href="mailto:admin@foodracoon.com" className="text-[#D44C2A] underline underline-offset-2">admin@foodracoon.com</a> with your request. We will action it within 30 days.</p>
         </Section>
 
         <Section title="7. Cookies and Local Storage">
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
         </Section>
 
         <Section title="9. Contact">
-          <p>Questions about this policy? Email us at <a href="mailto:prachsovithyea11@gmail.com" className="text-[#D44C2A] underline underline-offset-2">prachsovithyea11@gmail.com</a>.</p>
+          <p>Questions about this policy? Email us at <a href="mailto:admin@foodracoon.com" className="text-[#D44C2A] underline underline-offset-2">admin@foodracoon.com</a>.</p>
         </Section>
 
         <footer className="border-t border-[#D4C8B4] pt-6 text-sm text-[#8C7E72] flex flex-wrap gap-4">
