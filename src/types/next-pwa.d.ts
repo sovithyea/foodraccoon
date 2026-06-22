@@ -10,6 +10,7 @@ declare module "next-pwa" {
     disable?: boolean;
     register?: boolean;
     skipWaiting?: boolean;
+    clientsClaim?: boolean;
   }
   function withPWA(config: PWAConfig): (nextConfig: NextConfig) => NextConfig;
   export default withPWA;
