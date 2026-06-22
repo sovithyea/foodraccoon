@@ -19,10 +19,13 @@ export function FilterBar() {
   const panelOpen    = useMapStore((s) => !!s.selectedId);
 
   return (
-    <div className={cn(
-      "pointer-events-none absolute inset-x-0 top-0 z-20 p-3 transition-all duration-300",
-      panelOpen && "md:pr-[392px]",
-    )}>
+    <div
+      className={cn(
+        "pointer-events-none absolute inset-x-0 top-0 z-20 px-3 pb-3 transition-all duration-300",
+        panelOpen && "md:pr-[392px]",
+      )}
+      style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 12px)" }}
+    >
       <div className="pointer-events-auto flex items-center gap-2">
 
         {/* Search pill */}

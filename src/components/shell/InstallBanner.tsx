@@ -79,7 +79,7 @@ export function InstallBanner() {
   return (
     <div
       className="fixed inset-x-0 z-30 flex items-center gap-3 border-t border-[#D4C8B4] bg-[#EDE6D8] px-4 py-2.5 md:hidden"
-      style={{ bottom: "calc(max(8px, env(safe-area-inset-bottom)) + 52px)" }}
+      style={{ bottom: "calc(max(8px, env(safe-area-inset-bottom)) + 68px)" }}
     >
       <div className="flex flex-1 items-center gap-2.5 min-w-0">
         {platform === "ios" ? (
