@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, ChevronUp, Navigation, Bookmark, X, Check, Plus } from "lucide-react";
+import { ChevronDown, ChevronUp, Navigation, Bookmark, Check, Plus } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMapStore } from "@/store/mapStore";
@@ -116,14 +116,6 @@ function PanelContent({
             <div className="h-1 w-10 rounded-full bg-white/40" />
           </div>
         )}
-
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-black/50"
-        >
-          <X className="size-4" />
-        </button>
 
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-4">
           <h2 className="text-xl font-bold leading-tight tracking-tight text-white">{restaurant.name}</h2>

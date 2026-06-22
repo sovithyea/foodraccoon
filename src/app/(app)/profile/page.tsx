@@ -31,9 +31,18 @@ export default async function ProfilePage() {
     return (
       <div className="flex h-full flex-col items-center justify-center px-6 text-center">
         <div className="w-full max-w-xs space-y-6">
-          <div className="space-y-2">
-            <p className="text-3xl font-extrabold tracking-tight text-[#D44C2A]">foodraccoon</p>
-            <p className="text-sm text-[#8C7E72]">Track the restaurants you love in Phnom Penh</p>
+          <div className="flex flex-col items-center gap-3">
+            <img
+              src="/icon-512x512.png"
+              alt="Foodraccoon"
+              width={80}
+              height={80}
+              className="size-20 rounded-[22px] shadow-[0_2px_12px_rgba(44,36,32,0.14)]"
+            />
+            <div className="space-y-1">
+              <p className="text-3xl font-extrabold tracking-tight text-[#D44C2A]">foodraccoon</p>
+              <p className="text-sm text-[#8C7E72]">Track the restaurants you love in Phnom Penh</p>
+            </div>
           </div>
           <div className="rounded-2xl border border-[#D4C8B4] bg-[#EDE6D8] p-5 text-left space-y-3">
             {[

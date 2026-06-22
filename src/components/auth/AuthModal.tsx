@@ -13,7 +13,8 @@ export function AuthModal() {
       <SheetContent
         side="bottom"
         showCloseButton={false}
-        className="relative z-[60] mx-auto max-w-sm rounded-t-3xl bg-[#F5F0E8] px-8 pb-12 pt-8 md:!bottom-auto md:!top-1/2 md:!left-1/2 md:!right-auto md:!-translate-x-1/2 md:!-translate-y-1/2 md:!rounded-3xl"
+        overlayClassName="z-[99]"
+        className="relative z-[100] mx-auto max-w-sm rounded-t-3xl bg-[#F5F0E8] px-8 pb-12 pt-8"
       >
         <div className="flex flex-col items-center gap-5 text-center">
           <button
