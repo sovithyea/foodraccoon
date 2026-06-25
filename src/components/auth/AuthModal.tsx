@@ -18,26 +18,16 @@ export function AuthModal() {
         }`}
       />
 
-      {/* Sheet — bottom on mobile, centered dialog on desktop */}
+      {/* Centered dialog — same on mobile and desktop */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Sign in"
         className={[
-          // Base
-          "fixed z-[200] mx-auto w-full max-w-sm bg-[#F5F0E8] px-8 pb-12 pt-8",
-          // Mobile: anchored bottom sheet
-          "inset-x-0 bottom-0 rounded-t-2xl shadow-[0_-4px_24px_rgba(44,36,32,0.12)]",
-          // Desktop: centered dialog (overrides mobile positioning)
-          "md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:rounded-2xl md:shadow-xl",
-          // Horizontal centering on desktop (always on)
-          "md:-translate-x-1/2",
-          // Transition
-          "transition-[transform,opacity] duration-300 ease-out",
-          // State: open
-          isOpen
-            ? "translate-y-0 opacity-100 md:-translate-y-1/2 md:scale-100"
-            : "pointer-events-none translate-y-full opacity-0 md:-translate-y-1/2 md:scale-95",
+          "fixed z-[200] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+          "w-[calc(100%-2rem)] max-w-sm rounded-2xl bg-[#F5F0E8] p-6 shadow-xl",
+          "transition-[opacity,scale] duration-300 ease-out",
+          isOpen ? "opacity-100 scale-100" : "pointer-events-none opacity-0 scale-95",
         ].join(" ")}
       >
         <div className="flex flex-col items-center gap-5 text-center">
