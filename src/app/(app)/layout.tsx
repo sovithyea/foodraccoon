@@ -3,6 +3,7 @@ import { InstallBanner } from "@/components/shell/InstallBanner";
 import { OnboardingFlow } from "@/components/shell/OnboardingFlow";
 import { SplashScreen } from "@/components/shell/SplashScreen";
 import { AuthModal } from "@/components/auth/AuthModal";
+import { OrientationLock } from "@/components/shell/OrientationLock";
 
 export default function AppLayout({
   children,
@@ -21,6 +22,7 @@ export default function AppLayout({
       <OnboardingFlow />
       <SplashScreen />
       <AuthModal />
+      <OrientationLock />
       <main className="relative h-full flex-1 overflow-hidden">{children}</main>
     </div>
   );
