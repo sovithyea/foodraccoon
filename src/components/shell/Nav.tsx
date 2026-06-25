@@ -50,7 +50,7 @@ export function Nav() {
   return (
     <>
       {/* ── Desktop sidebar ── */}
-      <nav className="hidden w-48 shrink-0 flex-col border-r border-[#D4C8B4] bg-[#F5F0E8] p-3 md:flex">
+      <nav className="hidden w-48 shrink-0 flex-col border-r border-[#D4C8B4] bg-[#F5F0E8] p-3 lg:flex">
         <Link
           href="/"
           className="mb-5 px-3 text-2xl font-extrabold tracking-tight text-[#D44C2A]"
@@ -121,7 +121,7 @@ export function Nav() {
 
       {/* ── Mobile bottom nav ── */}
       <nav
-        className="fixed z-20 flex items-center rounded-2xl border border-[#D4C8B4] bg-[#F5F0E8] py-2 shadow-lg md:hidden"
+        className="fixed z-20 flex items-center rounded-2xl border border-[#D4C8B4] bg-[#F5F0E8] py-2 shadow-lg lg:hidden"
         style={{
           left: "1rem",
           right: "1rem",
