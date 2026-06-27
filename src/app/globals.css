@@ -186,7 +186,7 @@
   display: none;
 }
 
-@media (orientation: landscape) and (max-width: 768px) {
+@media (orientation: landscape) and (max-width: 767px) {
   .landscape-block {
     display: flex;
   }

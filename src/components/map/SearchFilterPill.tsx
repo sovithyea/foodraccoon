@@ -11,7 +11,7 @@ export function SearchFilterPill() {
   if (!searchFilterIds) return null;
 
   return (
-    <div className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+90px)] left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border bg-card/90 px-4 py-2 text-sm shadow-md backdrop-blur md:bottom-6">
+    <div className="absolute bottom-[calc(env(safe-area-inset-bottom,0px)+90px)] left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border bg-card/90 px-4 py-2 text-sm shadow-md backdrop-blur lg:bottom-6">
       <span className="font-medium">{searchFilterIds.size} result{searchFilterIds.size !== 1 ? "s" : ""}</span>
       <span className="text-muted-foreground">for &ldquo;{searchQuery}&rdquo;</span>
       <button

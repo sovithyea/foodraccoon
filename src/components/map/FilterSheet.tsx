@@ -116,7 +116,7 @@ export function FilterSheet({ open, onOpenChange }: Props) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="max-h-[85vh] overflow-y-auto md:inset-x-auto md:inset-y-0 md:left-auto md:right-0 md:h-full md:max-h-none md:w-3/4 md:max-w-sm md:border-t-0 md:border-l"
+        className="max-h-[85vh] overflow-y-auto lg:inset-x-auto lg:inset-y-0 lg:left-auto lg:right-0 lg:h-full lg:max-h-none lg:w-3/4 lg:max-w-sm lg:border-t-0 lg:border-l"
       >
         <SheetHeader>
           <SheetTitle>Filters</SheetTitle>

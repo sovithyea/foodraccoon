@@ -394,7 +394,7 @@ export function RestaurantPanel() {
   const listsFetchedFor   = useRef<string | null>(null);
 
   useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 768);
+    const check = () => setIsDesktop(window.innerWidth >= 1024);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
