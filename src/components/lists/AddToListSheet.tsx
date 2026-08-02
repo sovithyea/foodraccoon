@@ -26,6 +26,7 @@ export function AddToListSheet({ open, onOpenChange, restaurantId }: Props) {
 
   useEffect(() => {
     if (!open) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-open loading flag
     setLoading(true)
     fetch(`/api/lists?restaurantId=${restaurantId}`)
       .then((r) => r.json())

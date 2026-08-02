@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient as createServerClient } from "@/lib/supabase/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
-import { inferCuisineTypes, inferDistrict, mapPriceLevel, photoUrl } from "@/lib/places";
+import { inferCuisineTypes, inferDistrict, mapPriceLevel } from "@/lib/places";
 import { checkOrigin } from "@/lib/request-guard";
 
 const adminDb = createClient<Database>(
@@ -102,9 +102,7 @@ export async function POST(
     price_range: mapPriceLevel(details.price_level),
     google_rating: details.rating ?? null,
     google_rating_count: details.user_ratings_total ?? null,
-    cover_photo_url: details.photos?.[0]
-      ? photoUrl(details.photos[0].photo_reference, GOOGLE_API_KEY)
-      : null,
+    cover_photo_url: details.photos?.[0]?.photo_reference ?? null,
     phone: details.formatted_phone_number ?? null,
     website: details.website ?? null,
     opening_hours: details.opening_hours?.weekday_text

@@ -80,7 +80,7 @@ export default function LoginPage() {
               <form onSubmit={handleReset} className="space-y-4">
                 <div className="space-y-1">
                   <p className="text-sm font-semibold text-[#2C2420]">Reset your password</p>
-                  <p className="text-xs text-[#8C7E72]">Enter your email and we'll send a reset link.</p>
+                  <p className="text-xs text-[#8C7E72]">Enter your email and we&apos;ll send a reset link.</p>
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="reset-email">Email</Label>

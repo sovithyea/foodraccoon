@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bookmark, Check, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,30 @@ export function RatingSection({ restaurantId }: { restaurantId: string }) {
   const openAuthModal = useAuthModal((s) => s.open);
   const [pendingRating, setPendingRating] = useState<number | null>(null);
   const [review, setReview] = useState("");
+  const [savedRating, setSavedRating] = useState<number | null>(null);
+  const [savedReview, setSavedReview] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    async function hydrate() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || cancelled) return;
+      const { data } = await supabase
+        .from("user_restaurants")
+        .select("rating, review")
+        .eq("user_id", user.id)
+        .eq("restaurant_id", restaurantId)
+        .maybeSingle();
+      if (cancelled || !data) return;
+      setPendingRating(data.rating);
+      setReview(data.review ?? "");
+      setSavedRating(data.rating);
+      setSavedReview(data.review ?? "");
+    }
+    hydrate();
+    return () => { cancelled = true; };
+  }, [restaurantId]);
 
   async function setStatus(status: RestaurantStatus) {
     const { data: { user } } = await createClient().auth.getUser();
@@ -69,12 +93,23 @@ export function RatingSection({ restaurantId }: { restaurantId: string }) {
 
   async function saveRatingAndReview() {
     if (!currentStatus) return;
-    toast.success("Rating saved");
-    fetch(`/api/restaurants/${restaurantId}/rate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: currentStatus, rating: pendingRating, review: review || undefined }),
-    }).catch(() => {});
+    const prevRating = savedRating;
+    const prevReview = savedReview;
+    try {
+      const res = await fetch(`/api/restaurants/${restaurantId}/rate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: currentStatus, rating: pendingRating, review: review || null }),
+      });
+      if (!res.ok) throw new Error("Request failed");
+      setSavedRating(pendingRating);
+      setSavedReview(review);
+      toast.success("Rating saved");
+    } catch {
+      setPendingRating(prevRating);
+      setReview(prevReview);
+      toast.error("Failed to save rating");
+    }
   }
 
   const showRatingFields = currentStatus === "visited" || currentStatus === "favourite";
@@ -106,13 +141,13 @@ export function RatingSection({ restaurantId }: { restaurantId: string }) {
         <div className="space-y-3 rounded-xl border border-[#D4C8B4] bg-[#F5F0E8] p-3">
           <div>
             <p className="mb-2 text-[11px] font-medium text-[#8C7E72]">Rating (optional)</p>
-            <div className="flex gap-1">
+            <div className="grid grid-cols-5 gap-1">
               {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
                 <button
                   key={n}
                   onClick={() => setPendingRating(pendingRating === n ? null : n)}
                   className={cn(
-                    "flex h-7 w-7 items-center justify-center rounded-lg text-xs font-semibold transition-all active:scale-90",
+                    "flex min-h-11 items-center justify-center rounded-lg text-xs font-semibold transition-all active:scale-90",
                     pendingRating === n
                       ? "bg-[#D44C2A] text-white shadow-[0_2px_6px_rgba(212,76,42,0.3)]"
                       : "bg-[#EDE6D8] text-[#8C7E72] hover:bg-[#D4C8B4]",

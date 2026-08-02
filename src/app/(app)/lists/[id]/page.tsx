@@ -41,6 +41,7 @@ export default function ListDetailPage() {
 
     // Get list metadata from store or fetch
     const storeList = lists.find((l) => l.id === id)
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync store cache into local state on id change
     if (storeList) setList(storeList)
 
     fetch(`/api/lists/${id}/restaurants`)

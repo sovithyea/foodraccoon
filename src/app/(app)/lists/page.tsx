@@ -84,6 +84,7 @@ export default function ListsPage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount loading flag
     setLoading(true)
     fetch("/api/lists")
       .then((r) => r.json())

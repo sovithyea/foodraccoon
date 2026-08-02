@@ -97,14 +97,14 @@ export const useMapStore = create<MapState>((set) => ({
   toggleCuisine: (c) =>
     set((s) => {
       const next = new Set(s.cuisines);
-      next.has(c) ? next.delete(c) : next.add(c);
+      if (next.has(c)) next.delete(c); else next.add(c);
       return { cuisines: next };
     }),
 
   togglePrice: (p) =>
     set((s) => {
       const next = new Set(s.prices);
-      next.has(p) ? next.delete(p) : next.add(p);
+      if (next.has(p)) next.delete(p); else next.add(p);
       return { prices: next };
     }),
 

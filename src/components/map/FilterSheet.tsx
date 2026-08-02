@@ -46,6 +46,7 @@ export function FilterSheet({ open, onOpenChange }: Props) {
   // Seed the draft from the store each time the sheet opens.
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- seed draft filters from store when sheet opens
       setDraftPrices(new Set(prices));
       setDraftCuisines(new Set(cuisines));
       setDraftNearMe(nearMeStore);
@@ -64,14 +65,14 @@ export function FilterSheet({ open, onOpenChange }: Props) {
   const toggleDraftPrice = (p: number) =>
     setDraftPrices((prev) => {
       const next = new Set(prev);
-      next.has(p) ? next.delete(p) : next.add(p);
+      if (next.has(p)) next.delete(p); else next.add(p);
       return next;
     });
 
   const toggleDraftCuisine = (c: string) =>
     setDraftCuisines((prev) => {
       const next = new Set(prev);
-      next.has(c) ? next.delete(c) : next.add(c);
+      if (next.has(c)) next.delete(c); else next.add(c);
       return next;
     });
 

@@ -62,7 +62,6 @@ export function RestaurantMap() {
 
   const { resolvedTheme } = useTheme();
   const select = useMapStore((s) => s.select);
-  selectRef.current = select;
 
   const restaurants = useMapStore((s) => s.restaurants);
   const cuisines = useMapStore((s) => s.cuisines);
@@ -93,12 +92,17 @@ export function RestaurantMap() {
     return toGeoJSON(filtered, statusMap);
   }, [restaurants, cuisines, prices, nearMe, openNow, userLocation, statusMap, searchFilterIds]);
 
-  geojsonRef.current = geojson;
-  selectedIdRef.current = selectedId;
-  restaurantsRef.current = restaurants;
-  searchFilterIdsRef.current = searchFilterIds;
-  resolvedThemeRef.current = resolvedTheme;
-  mapStyleIdRef.current = mapStyleId;
+  // Keep refs in sync post-commit so the persistent map-init effect below
+  // (which never re-runs) can read latest values without going stale.
+  useEffect(() => {
+    selectRef.current = select;
+    geojsonRef.current = geojson;
+    selectedIdRef.current = selectedId;
+    restaurantsRef.current = restaurants;
+    searchFilterIdsRef.current = searchFilterIds;
+    resolvedThemeRef.current = resolvedTheme;
+    mapStyleIdRef.current = mapStyleId;
+  });
 
   // Initialise the map once.
   useEffect(() => {
@@ -213,7 +217,6 @@ export function RestaurantMap() {
       mapRef.current = null;
       loadedRef.current = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Switch to a manually selected map style.

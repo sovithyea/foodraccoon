@@ -16,7 +16,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../src/lib/database.types";
-import { inferCuisineTypes, inferDistrict, mapPriceLevel, photoUrl } from "../src/lib/places";
+import { inferCuisineTypes, inferDistrict, mapPriceLevel } from "../src/lib/places";
 
 // ---------------------------------------------------------------------------
 // Env loader (mirrors seed.ts)
@@ -252,9 +252,7 @@ async function run() {
       tags: [] as string[],
       price_range: mapPriceLevel(details.price_level),
       google_rating: details.rating ?? null,
-      cover_photo_url: details.photos?.[0]
-        ? photoUrl(details.photos[0].photo_reference, apiKey)
-        : null,
+      cover_photo_url: details.photos?.[0]?.photo_reference ?? null,
       phone: details.formatted_phone_number ?? null,
       website: details.website ?? null,
       opening_hours: details.opening_hours?.weekday_text

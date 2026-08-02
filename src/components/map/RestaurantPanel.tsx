@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp, Navigation, Bookmark, Check, Plus } from "lucid
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMapStore } from "@/store/mapStore";
-import { priceLabel } from "@/lib/restaurants";
+import { priceLabel, coverPhotoSrc } from "@/lib/restaurants";
 import { getHoursStatus } from "@/lib/openNow";
 import { haversineDistance, formatDistance, walkTimeMinutes } from "@/lib/geo";
 import { cn } from "@/lib/utils";
@@ -84,6 +84,7 @@ function PanelContent({
   onOpenCreateList,
 }: PanelContentProps) {
   const [coverError, setCoverError] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- reset broken-image flag when restaurant changes
   useEffect(() => { setCoverError(false); }, [restaurant.id]);
   const hoursStatus = getHoursStatus(restaurant.opening_hours);
   const nowUtc = new Date();
@@ -96,7 +97,7 @@ function PanelContent({
       <div className="relative h-[200px] w-full shrink-0 overflow-hidden">
         {restaurant.cover_photo_url && !coverError ? (
           <img
-            src={restaurant.cover_photo_url}
+            src={coverPhotoSrc(restaurant.cover_photo_url)!}
             alt={restaurant.name}
             width={800}
             height={200}
@@ -403,6 +404,7 @@ export function RestaurantPanel() {
   const restaurant = restaurants.find((r) => r.id === selectedId) ?? null;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset panel state when restaurant changes
     setShowFull(false);
     setReviews(null);
     reviewsFetchedFor.current = null;
@@ -413,6 +415,7 @@ export function RestaurantPanel() {
 
   useEffect(() => {
     if (!restaurant) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync pending flag when restaurant/location changes
     if (userLocation) { setLocationPending(false); return; }
     setLocationPending(true);
     navigator.geolocation.getCurrentPosition(

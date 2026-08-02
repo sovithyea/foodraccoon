@@ -72,6 +72,7 @@ export default function SearchPage() {
 
   useEffect(() => {
     inputRef.current?.focus();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only localStorage read on mount
     setRecent(loadRecent());
   }, []);
 
@@ -110,6 +111,7 @@ export default function SearchPage() {
 
   useEffect(() => {
     if (query.length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear results when query drops below search threshold
       setResults(null);
       setPeople([]);
       setError(false);
@@ -170,6 +172,7 @@ export default function SearchPage() {
   ];
 
   // Reset keyboard focus when results change
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setFocusedIndex(-1); }, [query]);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {

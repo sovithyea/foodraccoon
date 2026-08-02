@@ -65,7 +65,3 @@ export function inferDistrict(lat: number, lng: number): string {
   if (lat < 11.535) return "Mean Chey";
   return "Toul Tom Poung";
 }
-
-export function photoUrl(photoRef: string, apiKey: string): string {
-  return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef}&key=${apiKey}`;
-}

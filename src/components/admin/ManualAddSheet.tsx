@@ -58,6 +58,7 @@ export function ManualAddSheet({
   // Reset fields when sheet opens with new data
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset form fields when sheet opens
       setName(initialName)
       setAddress(initialAddress)
       setCuisine(initialCuisine)

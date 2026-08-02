@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Navigation } from "lucide-react";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { createClient } from "@/lib/supabase/server";
-import { priceLabel } from "@/lib/restaurants";
+import { priceLabel, coverPhotoSrc } from "@/lib/restaurants";
 import { getHoursStatus } from "@/lib/openNow";
 import { cn } from "@/lib/utils";
 import { RatingSection } from "@/components/restaurant/RatingSection";
@@ -65,7 +65,7 @@ export default async function RestaurantPage({
       {/* ── Hero ── */}
       <div className="relative h-[220px] w-full shrink-0 overflow-hidden">
         {restaurant.cover_photo_url ? (
-          <img src={restaurant.cover_photo_url} alt={restaurant.name} width={800} height={220} className="h-full w-full object-cover" />
+          <img src={coverPhotoSrc(restaurant.cover_photo_url)!} alt={restaurant.name} width={800} height={220} className="h-full w-full object-cover" />
         ) : (
           <div className="h-full w-full" style={{ background: heroGradient(restaurant.name) }} />
         )}

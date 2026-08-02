@@ -28,3 +28,9 @@ export function priceLabel(range: number | null): string {
   if (!range) return "—";
   return "$".repeat(Math.min(Math.max(range, 1), 4));
 }
+
+// cover_photo_url stores a bare Google Places photo_reference (never the
+// API key) — this proxies it through /api/photos so the key stays server-side.
+export function coverPhotoSrc(ref: string | null): string | null {
+  return ref ? `/api/photos?ref=${encodeURIComponent(ref)}` : null;
+}

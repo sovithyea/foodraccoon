@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { priceLabel } from "@/lib/restaurants"
+import { priceLabel, coverPhotoSrc } from "@/lib/restaurants"
 import { Button } from "@/components/ui/button"
 import type { Metadata } from "next"
 
@@ -75,7 +75,7 @@ export default async function PublicListPage({ params }: { params: Promise<Param
             return (
               <li key={restaurant_id} className="bg-card border-border flex items-center gap-3 rounded-xl border p-3">
                 {r.cover_photo_url ? (
-                  <img src={r.cover_photo_url} alt="" width={56} height={56} className="size-14 rounded-lg object-cover shrink-0" />
+                  <img src={coverPhotoSrc(r.cover_photo_url)!} alt="" width={56} height={56} className="size-14 rounded-lg object-cover shrink-0" />
                 ) : (
                   <div className="bg-muted size-14 rounded-lg shrink-0 flex items-center justify-center text-2xl">🍴</div>
                 )}

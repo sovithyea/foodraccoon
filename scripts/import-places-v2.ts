@@ -204,10 +204,6 @@ async function getPlaceDetails(placeId: string): Promise<PlaceDetails | null> {
   return data.result
 }
 
-function photoUrl(photoRef: string, maxWidth = 800): string {
-  return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photo_reference=${photoRef}&key=${GOOGLE_API_KEY}`
-}
-
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 function generateCityGrid(): { lat: number; lng: number }[] {
@@ -359,9 +355,7 @@ async function upsertRestaurant(details: PlaceDetails): Promise<boolean> {
     price_range:         mapPriceLevel(details.price_level),
     google_rating:       details.rating ?? null,
     google_rating_count: details.user_ratings_total ?? null,
-    cover_photo_url:     details.photos?.[0]
-                           ? photoUrl(details.photos[0].photo_reference)
-                           : null,
+    cover_photo_url:     details.photos?.[0]?.photo_reference ?? null,
     phone:               details.formatted_phone_number ?? null,
     website:             details.website ?? null,
     opening_hours:       details.opening_hours?.weekday_text

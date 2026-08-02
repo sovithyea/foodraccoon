@@ -38,6 +38,7 @@ export function InstallBanner() {
 
     const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
     if (isIos) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only UA sniff on mount
       setPlatform("ios");
       return;
     }

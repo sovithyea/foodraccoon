@@ -17,6 +17,7 @@ export function OnboardingFlow() {
 
   useEffect(() => {
     if (localStorage.getItem(ONBOARDED_KEY)) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only localStorage read on mount
     setVisible(true);
   }, []);
 
@@ -61,7 +62,7 @@ export function OnboardingFlow() {
             <img src="/icon-512x512.png" alt="FoodRaccoon" width={96} height={96} className="size-24 rounded-3xl shadow-lg" />
             <div className="space-y-2">
               <h1 className="text-3xl font-bold text-[#2C2420]">FoodRaccoon</h1>
-              <p className="text-base text-[#8C7E72]">Discover Phnom Penh's best restaurants</p>
+              <p className="text-base text-[#8C7E72]">Discover Phnom Penh&apos;s best restaurants</p>
             </div>
             <button onClick={advance} className={primaryBtn}>
               Get Started
@@ -77,7 +78,7 @@ export function OnboardingFlow() {
             </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-bold text-[#2C2420]">Find restaurants near you</h2>
-              <p className="text-base text-[#8C7E72]">We'll show you what's close and open now</p>
+              <p className="text-base text-[#8C7E72]">We&apos;ll show you what&apos;s close and open now</p>
             </div>
             <div className="flex w-full max-w-xs flex-col gap-3">
               <button onClick={enableLocation} className={primaryBtn}>
@@ -100,7 +101,7 @@ export function OnboardingFlow() {
               <CheckCircle2 className="size-9 text-[#D44C2A]" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-[#2C2420]">You're all set!</h2>
+              <h2 className="text-2xl font-bold text-[#2C2420]">You&apos;re all set!</h2>
               <p className="text-base text-[#8C7E72]">
                 Start exploring the best restaurants in Phnom Penh
               </p>

@@ -11,6 +11,7 @@ export function SplashScreen() {
 
   useEffect(() => {
     if (!localStorage.getItem(ONBOARDED_KEY)) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only localStorage read on mount
     setVisible(true);
     const fadeTimer = setTimeout(() => setFading(true), 1200);
     const unmountTimer = setTimeout(() => setVisible(false), 1600);
