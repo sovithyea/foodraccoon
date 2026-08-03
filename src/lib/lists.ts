@@ -25,6 +25,7 @@ export type ListRestaurantDetail = {
     price_range: number | null;
     google_rating: number | null;
     cover_photo_url: string | null;
+    google_place_id: string | null;
     latitude: number;
     longitude: number;
   };

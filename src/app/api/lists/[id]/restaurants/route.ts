@@ -23,7 +23,7 @@ export async function GET(
 
   const { data: rows } = await supabase
     .from("list_restaurants")
-    .select("list_id, restaurant_id, added_at, note, position, restaurants(id, name, district, cuisine_type, price_range, google_rating, cover_photo_url, latitude, longitude)")
+    .select("list_id, restaurant_id, added_at, note, position, restaurants(id, name, district, cuisine_type, price_range, google_rating, cover_photo_url, google_place_id, latitude, longitude)")
     .eq("list_id", id)
     .order("added_at", { ascending: false });
 

@@ -19,6 +19,7 @@ type Entry = {
     cuisine_type: string[]
     price_range: number | null
     cover_photo_url: string | null
+    google_place_id: string | null
   } | null
 }
 
@@ -41,7 +42,7 @@ export function DefaultListPage({ status }: { status: keyof typeof CONFIG }) {
       if (!user) { setLoading(false); return }
       const { data } = await supabase
         .from("user_restaurants")
-        .select("restaurant_id, restaurants(id, name, district, cuisine_type, price_range, cover_photo_url)")
+        .select("restaurant_id, restaurants(id, name, district, cuisine_type, price_range, cover_photo_url, google_place_id)")
         .eq("user_id", user.id)
         .eq("status", status)
         .order("created_at", { ascending: false })
@@ -94,8 +95,8 @@ export function DefaultListPage({ status }: { status: keyof typeof CONFIG }) {
                     onClick={() => openOnMap(r.id)}
                     className="bg-card border-border hover:bg-accent/30 flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors"
                   >
-                    {r.cover_photo_url ? (
-                      <img src={coverPhotoSrc(r.cover_photo_url)!} alt="" width={48} height={48} className="size-12 rounded-md object-cover shrink-0" />
+                    {r.cover_photo_url && r.google_place_id ? (
+                      <img src={coverPhotoSrc(r.google_place_id, r.cover_photo_url)!} alt="" width={48} height={48} className="size-12 rounded-md object-cover shrink-0" />
                     ) : (
                       <div className="bg-muted size-12 rounded-md shrink-0 flex items-center justify-center">
                         <Utensils className="size-5 text-muted-foreground/50" />

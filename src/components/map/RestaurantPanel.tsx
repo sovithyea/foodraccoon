@@ -95,9 +95,9 @@ function PanelContent({
 
       {/* ── Hero ── */}
       <div className="relative h-[200px] w-full shrink-0 overflow-hidden">
-        {restaurant.cover_photo_url && !coverError ? (
+        {restaurant.cover_photo_url && restaurant.google_place_id && !coverError ? (
           <img
-            src={coverPhotoSrc(restaurant.cover_photo_url)!}
+            src={coverPhotoSrc(restaurant.google_place_id, restaurant.cover_photo_url)!}
             alt={restaurant.name}
             width={800}
             height={200}

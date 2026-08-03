@@ -29,8 +29,11 @@ export function priceLabel(range: number | null): string {
   return "$".repeat(Math.min(Math.max(range, 1), 4));
 }
 
-// cover_photo_url stores a bare Google Places photo_reference (never the
+// cover_photo_url stores a bare Places API (New) photo reference (never the
 // API key) — this proxies it through /api/photos so the key stays server-side.
-export function coverPhotoSrc(ref: string | null): string | null {
-  return ref ? `/api/photos?ref=${encodeURIComponent(ref)}` : null;
+// The new Places photo media endpoint needs both the place id and the photo
+// reference to build its resource path (places/{placeId}/photos/{ref}/media).
+export function coverPhotoSrc(placeId: string | null, ref: string | null): string | null {
+  if (!ref || !placeId) return null;
+  return `/api/photos?placeId=${encodeURIComponent(placeId)}&ref=${encodeURIComponent(ref)}`;
 }

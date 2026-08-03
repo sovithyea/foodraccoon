@@ -28,7 +28,7 @@ export async function GET(
 
   const { data: rows } = await supabase
     .from("list_restaurants")
-    .select("restaurant_id, added_at, restaurants(id, name, district, cuisine_type, price_range, google_rating, cover_photo_url, latitude, longitude)")
+    .select("restaurant_id, added_at, restaurants(id, name, district, cuisine_type, price_range, google_rating, cover_photo_url, google_place_id, latitude, longitude)")
     .eq("list_id", list.id)
     .order("added_at", { ascending: false })
 

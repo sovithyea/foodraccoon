@@ -64,8 +64,8 @@ export default async function RestaurantPage({
 
       {/* ── Hero ── */}
       <div className="relative h-[220px] w-full shrink-0 overflow-hidden">
-        {restaurant.cover_photo_url ? (
-          <img src={coverPhotoSrc(restaurant.cover_photo_url)!} alt={restaurant.name} width={800} height={220} className="h-full w-full object-cover" />
+        {restaurant.cover_photo_url && restaurant.google_place_id ? (
+          <img src={coverPhotoSrc(restaurant.google_place_id, restaurant.cover_photo_url)!} alt={restaurant.name} width={800} height={220} className="h-full w-full object-cover" />
         ) : (
           <div className="h-full w-full" style={{ background: heroGradient(restaurant.name) }} />
         )}
