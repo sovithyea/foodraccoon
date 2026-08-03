@@ -78,25 +78,23 @@ export async function POST(
     }
   }
 
-  const { data: existing } = await supabase
+  let { data, error } = await supabase
     .from("user_restaurants")
-    .select("id")
-    .eq("user_id", user.id)
-    .eq("restaurant_id", restaurantId)
-    .maybeSingle();
+    .insert({ user_id: user.id, restaurant_id: restaurantId, status: "want_to_try", ...fields })
+    .select("id, status, rating, review")
+    .single();
 
-  const { data, error } = existing
-    ? await supabase
-        .from("user_restaurants")
-        .update(fields)
-        .eq("id", existing.id)
-        .select("id, status, rating, review")
-        .single()
-    : await supabase
-        .from("user_restaurants")
-        .insert({ user_id: user.id, restaurant_id: restaurantId, status: "want_to_try", ...fields })
-        .select("id, status, rating, review")
-        .single();
+  // Row already exists (concurrent insert or repeat call) — fall back to a
+  // partial update so we don't clobber fields not present in this request.
+  if (error?.code === "23505") {
+    ({ data, error } = await supabase
+      .from("user_restaurants")
+      .update(fields)
+      .eq("user_id", user.id)
+      .eq("restaurant_id", restaurantId)
+      .select("id, status, rating, review")
+      .single());
+  }
 
   if (error) return NextResponse.json({ error: "Failed to save rating" }, { status: 400 });
   return NextResponse.json({ ok: true, userRestaurant: data });

@@ -51,13 +51,24 @@ async function main() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
 
-  const { data, error } = await supabase
-    .from("restaurants")
-    .select("id, cover_photo_url")
-    .like("cover_photo_url", "https://maps.googleapis.com/%key=%");
+  // PostgREST caps unbounded selects at 1000 rows — page through with
+  // .range() so runs with > 1000 leaked rows aren't silently truncated.
+  const PAGE_SIZE = 1000;
+  const data: { id: string; cover_photo_url: string | null }[] = [];
+  for (let offset = 0; ; offset += PAGE_SIZE) {
+    const { data: page, error } = await supabase
+      .from("restaurants")
+      .select("id, cover_photo_url")
+      .like("cover_photo_url", "https://maps.googleapis.com/%key=%")
+      .range(offset, offset + PAGE_SIZE - 1);
 
-  if (error) throw error;
-  if (!data || data.length === 0) {
+    if (error) throw error;
+    if (!page || page.length === 0) break;
+    data.push(...page);
+    if (page.length < PAGE_SIZE) break;
+  }
+
+  if (data.length === 0) {
     console.log("No rows with a leaked key found.");
     return;
   }

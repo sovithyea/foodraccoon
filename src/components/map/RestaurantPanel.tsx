@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, ChevronUp, Navigation, Bookmark, Check, Plus } from "lucide-react";
+import { ChevronDown, ChevronUp, Navigation, Bookmark, Check, Plus, X } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMapStore } from "@/store/mapStore";
@@ -393,6 +393,7 @@ export function RestaurantPanel() {
   const ratingFetchedFor  = useRef<string | null>(null);
   const reviewsFetchedFor = useRef<string | null>(null);
   const listsFetchedFor   = useRef<string | null>(null);
+  const desktopPanelRef   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 1024);
@@ -402,6 +403,25 @@ export function RestaurantPanel() {
   }, []);
 
   const restaurant = restaurants.find((r) => r.id === selectedId) ?? null;
+
+  // Desktop only: click outside the sidebar (i.e. on the map) or Escape closes it.
+  useEffect(() => {
+    if (!isDesktop || !restaurant) return;
+    function handlePointerDown(e: MouseEvent) {
+      if (desktopPanelRef.current && !desktopPanelRef.current.contains(e.target as Node)) {
+        select(null);
+      }
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") select(null);
+    }
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isDesktop, restaurant, select]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reset panel state when restaurant changes
@@ -526,12 +546,25 @@ export function RestaurantPanel() {
     <>
       {isDesktop && (
         <div
+          ref={desktopPanelRef}
           className={cn(
             "absolute right-0 top-0 z-10 h-full w-[380px] flex-col border-l border-[#D4C8B4] bg-[#F5F0E8] shadow-[-8px_0_24px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out",
             restaurant ? "flex translate-x-0" : "translate-x-full hidden",
           )}
         >
-          {restaurant && contentProps && <PanelContent {...contentProps} isDesktop={true} />}
+          {restaurant && contentProps && (
+            <>
+              <button
+                type="button"
+                onClick={() => select(null)}
+                aria-label="Close"
+                className="absolute right-3 top-3 z-20 flex size-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+              >
+                <X className="size-4" />
+              </button>
+              <PanelContent {...contentProps} isDesktop={true} />
+            </>
+          )}
         </div>
       )}
 
