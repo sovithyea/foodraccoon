@@ -23,7 +23,7 @@ export async function proxy(request: NextRequest) {
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
       "unknown";
-    if (isRateLimited(ip)) {
+    if (await isRateLimited(ip)) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
   }
